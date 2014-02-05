@@ -33,7 +33,16 @@ public abstract class graphics {
 		final public float b;
 		final public float a;
 		
+		final public int red;
+		final public int green;
+		final public int blue;
+		final public int alpha;
+		
 		private Colour(int red, int green, int blue, int alpha) {
+			this.red = red;
+			this.green = green;
+			this.blue = blue;
+			this.alpha = alpha;
 			r = (float)(Math.max(0, Math.min(255, red)) / 255);
 			g = (float)(Math.max(0, Math.min(255, green)) / 255);
 			b = (float)(Math.max(0, Math.min(255, blue)) / 255);
@@ -41,11 +50,14 @@ public abstract class graphics {
 		}
 		
 		private Colour(int red, int green, int blue) {
-			r = (float)(Math.max(0, Math.min(255, red)) / 255);
-			g = (float)(Math.max(0, Math.min(255, green)) / 255);
-			b = (float)(Math.max(0, Math.min(255, blue)) / 255);
-			a = 1f;
+			this(red, green, blue, 255);
 		}
+		 
+		@Override
+		public String toString() {
+			return "Colour: (" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+		}
+		
 	}
 	
 	/**
@@ -643,8 +655,7 @@ public abstract class graphics {
 	 * @param colour the colour to draw things.
 	 */
 	public static void setColour(Colour colour) {
-		currentColour = colour;
-		glColor4f(currentColour.r, currentColour.g, currentColour.b, currentColour.a);
+		setColour(colour.red, colour.green, colour.blue, colour.alpha);
 	}
 
 	/**
@@ -657,9 +668,9 @@ public abstract class graphics {
 	 */
 	public static void setColour(double r, double g, double b, double a) {
 		currentColour = new Colour((int)r, (int)g, (int)b, (int)a);
-		double red = (Math.max(0, Math.min(255, r)) / 255);
+		double red   = Math.max(0, Math.min(255, r)) / 255;
 		double green = Math.max(0, Math.min(255, g)) / 255;
-		double blue = Math.max(0, Math.min(255, b)) / 255;
+		double blue  = Math.max(0, Math.min(255, b)) / 255;
 		double alpha = Math.max(0, Math.min(255, a)) / 255;
 		glColor4d(red, green, blue, alpha);
 	}
