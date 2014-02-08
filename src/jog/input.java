@@ -214,8 +214,13 @@ public abstract class input {
 	
 	public final static int KEY_LCRTL = Keyboard.KEY_LCONTROL;
 	public final static int KEY_RCRTL = Keyboard.KEY_RCONTROL;
+	public final static int KEY_LALT = Keyboard.KEY_LMENU;
+	public final static int KEY_RALT = Keyboard.KEY_RMENU;
 	public final static int KEY_LSHIFT = Keyboard.KEY_LSHIFT;
 	public final static int KEY_RSHIFT = Keyboard.KEY_RSHIFT;
+	public final static int KEY_INSERT = Keyboard.KEY_INSERT;
+	public final static int KEY_HOME = Keyboard.KEY_HOME;
+	public final static int KEY_END = Keyboard.KEY_END;
 	public final static int KEY_PAGEUP = Keyboard.KEY_PRIOR;
 	public final static int KEY_PAGEDOWN = Keyboard.KEY_NEXT;
 	public final static int KEY_CAPS_LOCK = Keyboard.KEY_CAPITAL;
