@@ -2,14 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/IMP1/Downloads/slick-util/lib/jogg-0.0.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/IMP1/Downloads/slick-util/lib/jorbis-0.0.15.jar"/>
-	<classpathentry kind="lib" path="C:/Users/IMP1/Downloads/slick-util/lib/lwjgl.jar">
+	<classpathentry kind="lib" path="ext/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="ext/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="ext/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="ext/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/IMP1/Downloads/lwjgl-2.9.0/lwjgl-2.9.0/native/windows"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="JÖG/ext/natives/windows"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/IMP1/Downloads/slick/lib/slick.jar"/>
-	<classpathentry kind="lib" path="C:/Users/IMP1/Downloads/slick/lib/ibxm.jar"/>
+	<classpathentry kind="lib" path="ext/slick.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
