@@ -395,7 +395,6 @@ public abstract class graphics {
 	 * @param segments how many lines segments to draw to approximate the curve.
 	 */
 	public static void circle(boolean fill, double x, double y, double r, double segments) {
-		
 		push();
 		translate(x, y);
 		glScaled(r, r, 1);
