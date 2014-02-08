@@ -34,6 +34,8 @@ public class Main implements jog.input.EventHandler {
 		font = graphics.newBitmapFont("font.png", "0123456789().,- ");
 		graphics.setFont(font);
 		graphics.setBackgroundColour(0, 128, 128);
+		String[] icons = {"icon16.png", "icon32.png", "icon64.png"}; 
+		window.setIcon(icons);
 //		beep = audio.newSoundEffect("beep.ogg");
 	}
 	
