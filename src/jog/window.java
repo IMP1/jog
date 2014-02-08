@@ -1,8 +1,9 @@
 package jog;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
@@ -10,7 +11,6 @@ import javax.imageio.ImageIO;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.newdawn.slick.util.ResourceLoader;
 
 /**
  * <h1>jog.window</h1>
@@ -118,8 +118,10 @@ public abstract class window {
 	}
 	
 	private static ByteBuffer loadIcon(String filename, int size) throws IOException {
-		InputStream path = ResourceLoader.getResourceAsStream(filename);
-		BufferedImage img = ImageIO.read(path);
+		URL url = window.class.getResource(File.separator + filename);
+		if (url == null) url = window.class.getResource(File.separator + ".." + File.separator + filename);
+		if (url == null) url = window.class.getResource(File.separator + ".." + File.separator + ".." + File.separator + filename);
+		BufferedImage img = ImageIO.read(url);
 		byte[] imageBytes = new byte[size * size * 4];
 	    for (int y = 0; y < size; y++) {
 	        for (int x = 0; x < size; x++) {
