@@ -20,6 +20,9 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public abstract class graphics {
 	
+	public enum BlendMode {
+		ADDITIVE, SUBTRACTIVE, MULTIPLICATIVE, ALPHA,
+	}
 	
 	/**
 	 * <h1>Colour</h1>
@@ -335,7 +338,7 @@ public abstract class graphics {
 		glOrtho(0, window.width(), window.height(), 0, -1, 1);
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		setBlendMode();
 		backgroundColour = new Colour(0, 0, 0);
 		currentColour = new Colour(255, 255, 255);
 	}
@@ -638,6 +641,22 @@ public abstract class graphics {
 	 */
 	public static Quad newQuad(double x, double y, double quadWidth, double quadHeight, double imageWidth, double imageHeight) {
 		return new Quad(x, y, quadWidth, quadHeight, imageWidth, imageHeight);
+	}
+	
+	public static void setBlendMode(BlendMode mode) {
+		if (mode == BlendMode.ADDITIVE) {
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		} else if (mode == BlendMode.SUBTRACTIVE) {
+			glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR); 
+		} else if (mode == BlendMode.MULTIPLICATIVE) {
+			glBlendFunc(GL_DST_COLOR, GL_ZERO);
+		} else if (mode == BlendMode.ALPHA) {
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+	}
+	
+	public static void setBlendMode() {
+		setBlendMode(BlendMode.ALPHA);
 	}
 	
 	/**
