@@ -53,22 +53,26 @@ public class Main implements jog.input.EventHandler {
 
 		int length = 32;
 		graphics.setColour(0, 0, 0);
-		graphics.circle(true, 128, 64 + Math.sin(Math.PI / 3) * length / 2, 64);
-		graphics.setColour(255, 0, 0, 128);
+		graphics.circle(true, 128, 64 + Math.sin(Math.PI / 3) * length / 1.5, 64);
+		graphics.setBlendMode(graphics.BlendMode.ADDITIVE);
+		graphics.setColour(255, 0, 0);
 		graphics.circle(true, 128, 64, 32);
-		graphics.setColour(0, 255, 0, 128);
+		graphics.setColour(0, 255, 0);
 		graphics.circle(true, 128 - Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
-		graphics.setColour(0, 0, 255, 128);
+		graphics.setColour(0, 0, 255);
 		graphics.circle(true, 128 + Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
+		graphics.setBlendMode();
 		
 		graphics.setColour(255, 255, 255);
-		graphics.circle(true, 344, 64 + Math.sin(Math.PI / 3) * length / 2, 64);
-		graphics.setColour(0, 255, 255, 128);
+		graphics.circle(true, 344, 64 + Math.sin(Math.PI / 3) * length / 1.5, 64);
+		graphics.setBlendMode(graphics.BlendMode.SUBTRACTIVE);
+		graphics.setColour(255, 0, 0);
 		graphics.circle(true, 344, 64, 32);
-		graphics.setColour(255, 0, 255, 128);
+		graphics.setColour(0, 255, 0);
 		graphics.circle(true, 344 - Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
-		graphics.setColour(255, 255, 0, 128);
+		graphics.setColour(0, 0, 255);
 		graphics.circle(true, 344 + Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
+		graphics.setBlendMode();
 		
 		graphics.setColour(255, 255, 255);
 		int triangleX = 192;
