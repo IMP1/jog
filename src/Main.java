@@ -8,7 +8,7 @@ public class Main implements jog.input.EventHandler {
 		new Main();
 	}
 	
-	final private String TITLE = "IMP1 2D Java Game Framework";
+	final private String TITLE = "JOG";
 	final private int WIDTH = 640;
 	final private int HEIGHT = 480;
 	
@@ -75,13 +75,16 @@ public class Main implements jog.input.EventHandler {
 		graphics.setBlendMode();
 		
 		graphics.setColour(255, 255, 255);
+		
+		graphics.draw(img, 460, 128);
+		
 		int triangleX = 192;
 		int triangleY = 256;
 		length = 256;
 		double radius;
 		int direction;
-		graphics.setColour(255, 255, 255);
 		for (int i = 0; i < 5; i ++) {
+			graphics.setColour(255 / (i+1), 255 / (i+1), 255 / (i+1));
 			direction = (i % 2) * 2 - 1;
 			radius = length * (Math.sqrt(3) / 7.0);
 			int x1 = triangleX;
@@ -90,7 +93,7 @@ public class Main implements jog.input.EventHandler {
 			int y1 = (int) (triangleY - direction * (Math.sin(Math.PI / 3) * length - radius));
 			int y2 = (int) (triangleY + direction * Math.sin(Math.PI / 6) * radius);
 			int y3 = (int) (triangleY + direction * Math.sin(Math.PI / 6) * radius);
-			graphics.triangle(false, x1, y1, x2, y2, x3, y3);
+			graphics.triangle(true, x1, y1, x2, y2, x3, y3);
 			triangleY -= direction * radius * 6 / 8;
 			length = (int) (radius * 2);
 		}
