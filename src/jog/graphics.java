@@ -325,6 +325,7 @@ public abstract class graphics {
 		
 	}
 	
+	private static BlendMode currentBlendMode;
 	private static Font currentFont;
 	private static Colour currentColour;
 	private static Colour backgroundColour;
@@ -339,8 +340,8 @@ public abstract class graphics {
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_BLEND);
 		setBlendMode();
-		backgroundColour = new Colour(0, 0, 0);
-		currentColour = new Colour(255, 255, 255);
+		setBackgroundColour(0, 0, 0);
+		setColour(255, 255, 255);
 	}
 
 	/**
@@ -552,9 +553,7 @@ public abstract class graphics {
 		if (currentFont == null) currentFont = newSystemFont("Times New Roman");
 		currentFont.print(x, y, text, size);
 	}
-	public static void print(String text, double x, double y){
-		print(text, x, y, 1);
-	}
+	public static void print(String text, double x, double y){ print(text, x, y, 1); }
 	
 	/**
 	 * Draws text to the screen using the current font. If no font has yet been made, it creates a default.
@@ -616,9 +615,7 @@ public abstract class graphics {
 	public static SystemFont newSystemFont(String fontName, int size) {
 		return new SystemFont(fontName, size);
 	}
-	public static SystemFont newSystemFont(String fontName) {
-		return newSystemFont(fontName, 24);
-	}
+	public static SystemFont newSystemFont(String fontName) { return newSystemFont(fontName, 24); }
 		
 	/**
 	 * Creates and returns a new Image.
@@ -643,7 +640,20 @@ public abstract class graphics {
 		return new Quad(x, y, quadWidth, quadHeight, imageWidth, imageHeight);
 	}
 	
+	/**
+	 * Accesses the current blend mode affecting draw functions.
+	 * @return the current blend mode.
+	 */
+	public static BlendMode getBlendMode() {
+		return currentBlendMode;
+	}
+	
+	/**
+	 * Sets the blend mode of all things drawn until either the blend mode is changed again.
+	 * @param mode the blend mode to draw things.
+	 */
 	public static void setBlendMode(BlendMode mode) {
+		currentBlendMode = mode;
 		if (mode == BlendMode.ADDITIVE) {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		} else if (mode == BlendMode.SUBTRACTIVE) {
@@ -655,6 +665,9 @@ public abstract class graphics {
 		}
 	}
 	
+	/**
+	 * Reverts the blend mode to the default.
+	 */
 	public static void setBlendMode() {
 		setBlendMode(BlendMode.ALPHA);
 	}
@@ -668,8 +681,7 @@ public abstract class graphics {
 	}
 	
 	/**
-	 * Sets the colour of all things drawn until either the colour is changed again
-	 * or the end of the draw phase is reached. 
+	 * Sets the colour of all things drawn until either the colour is changed again.
 	 * @param colour the colour to draw things.
 	 */
 	public static void setColour(Colour colour) {
@@ -694,6 +706,22 @@ public abstract class graphics {
 	}
 	public static void setColour(int r, int g, int b) { setColour(r, g, b, 255); }
 
+	/**
+	 * Accesses the current colour the window clears to.
+	 * @return the background colour.
+	 */
+	public static Colour getBackgroundColour() {
+		return backgroundColour;
+	}
+	
+	/**
+	 * Sets the colour that the window clears to, and that the window will be at 
+	 * the beginning of a draw phase.
+	 * @param r the red component of the colour.
+	 * @param g the green component of the colour.
+	 * @param b the blue component of the colour.
+	 * @param a the alpha component of the colour.
+	 */
 	public static void setBackgroundColour(double r, double g, double b, double a) {
 		backgroundColour = new Colour((int)r, (int)g, (int)b, (int)a);
 		float red   = (float)(Math.max(0, Math.min(255, r)) / 255);
@@ -704,10 +732,6 @@ public abstract class graphics {
 	}
 	public static void setBackgroundColour(double r, double g, double b) { setBackgroundColour(r, g, b, 255); }
 	
-	public static Colour getBackgroundColour() {
-		return backgroundColour;
-	}
-	
 	/**
 	 * Sets the font to print text with.
 	 * @param font the new font to be active.
@@ -717,32 +741,33 @@ public abstract class graphics {
 	}
 
 	/**
-	 * 
+	 * Pushes the current state of the transformations and scaling onto a stack.
 	 */
 	public static void push() {
 		glPushMatrix();
 	}
 	
 	/**
-	 * 
+	 * Pops the top off the stack, reverting to the state before the latest push.
+	 * @see #push()
 	 */
 	public static void pop() {
 		glPopMatrix();
 	}
 	
 	/**
-	 * 
-	 * @param x
-	 * @param y
+	 * translates all drawn things by the horizontal and vertical amounts.
+	 * @param x the horizontal amount to translate by.
+	 * @param y the vertical amount to translate by.
 	 */
 	public static void translate(double x, double y) {
 		glTranslated(x, y, 0);
 	}
 	
 	/**
-	 * 
-	 * @param scaleX
-	 * @param scaleY
+	 * scales all drawn things by the horizontal and vertical amounts.
+	 * @param scaleX the horizontal amount to scale by.
+	 * @param scaleY the vertical amount to scale by.
 	 */
 	public static void scale(double scaleX, double scaleY) {
 		glScaled(scaleX, scaleY, 1);
