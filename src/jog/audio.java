@@ -128,6 +128,11 @@ public abstract class audio {
 		
 	}
 	
+	/**
+	 * <h1>jog.audio.Sound</h1>
+	 * <p></p>
+	 * @author IMP1
+	 */
 	public static class Sound {
 		
 		private Audio _source;
@@ -179,15 +184,34 @@ public abstract class audio {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param filepath
+	 * @param stream
+	 * @param loop
+	 * @return
+	 */
 	public static Music newMusic(String filepath, boolean stream, boolean loop) {
 		return new Music(filepath, stream, loop);
 	}
 	public static Music newMusic(String filepath) { return newMusic(filepath, true, true); }
 	
+	/**
+	 * 
+	 * @param filepath
+	 * @return
+	 */
 	public static Sound newSoundEffect(String filepath) {
 		return new Sound(filepath);
 	}
 	
+	/**
+	 * 
+	 * @param filepath
+	 * @param stream
+	 * @return
+	 * @throws IOException
+	 */
 	public static Audio newAudio(String filepath, boolean stream) throws IOException {
 		if (stream) { 
 			return AudioLoader.getStreamingAudio("OGG", ResourceLoader.getResource(filepath));
@@ -196,10 +220,16 @@ public abstract class audio {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public static void update() {
 		SoundStore.get().poll(0);
 	}
 	
+	/**
+	 * 
+	 */
 	public static void dispose() {
 		AL.destroy();
 	}
