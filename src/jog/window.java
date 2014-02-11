@@ -1,7 +1,6 @@
 package jog;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -118,9 +117,7 @@ public abstract class window {
 	}
 	
 	private static ByteBuffer loadIcon(String filename, int size) throws IOException {
-		URL url = window.class.getResource(File.separator + filename);
-		if (url == null) url = window.class.getResource(File.separator + ".." + File.separator + filename);
-		if (url == null) url = window.class.getResource(File.separator + ".." + File.separator + ".." + File.separator + filename);
+		URL url = filesystem.load(filename);
 		BufferedImage img = ImageIO.read(url);
 		byte[] imageBytes = new byte[size * size * 4];
 	    for (int y = 0; y < size; y++) {
