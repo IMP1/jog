@@ -1,15 +1,11 @@
 package jog;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
+
+import jog.image.Image;
 
 /**
  * <h1>jog.graphics</h1>
@@ -21,7 +17,14 @@ import org.newdawn.slick.util.ResourceLoader;
 public abstract class graphics {
 	
 	public enum BlendMode {
-		ADDITIVE, SUBTRACTIVE, MULTIPLICATIVE, ALPHA,
+		ADDITIVE("additive"), 
+		SUBTRACTIVE("subtractive"), 
+		MULTIPLICATIVE("multiplicative"), 
+		ALPHA("alpha");
+		
+		private final String id;
+		BlendMode(String id) { this.id = id; }
+	    public String getValue() { return id; }
 	}
 	
 	/**
@@ -41,7 +44,7 @@ public abstract class graphics {
 		final public int blue;
 		final public int alpha;
 		
-		private Colour(int red, int green, int blue, int alpha) {
+		protected Colour(int red, int green, int blue, int alpha) {
 			this.red = red;
 			this.green = green;
 			this.blue = blue;
@@ -112,7 +115,7 @@ public abstract class graphics {
 		 * @param chars a String containing the characters in the same order that the image has them.
 		 */
 		private BitmapFont(String filepath, String chars) {
-			image = newImage(filepath);
+			image = jog.image.newImage(filepath);
 			glyphs = chars;
 		}
 		
@@ -132,7 +135,7 @@ public abstract class graphics {
 			
 	    	glEnable(GL_TEXTURE_2D);
 	    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	    	image.texture.bind();
+	    	image.bind();
 			glPushMatrix();
 			glTranslated(x, y, 0);
 			glScaled(size, size, 1);
@@ -170,7 +173,7 @@ public abstract class graphics {
 			x += (width - (w * text.length() * size)) / 2;
 			
 			glEnable(GL_TEXTURE_2D);
-	    	image.texture.bind();
+	    	image.bind();
 			glPushMatrix();
 			glTranslated(x, y, 0);
 			glScaled(size, size, 1);
@@ -241,61 +244,7 @@ public abstract class graphics {
 		
 	}
 	
-	/**
-	 * <h1>jog.graphics.Image</h1>
-	 * <p>Essentially an object-orientated wrapper for the slick Texture.</p>
-	 * @author IMP1
-	 * @see Texture
-	 */
-	public static class Image {
-		
-		private Texture texture;
-		
-		/**
-		 * Constructor for an image.
-		 * @param filepath the path to the image file.
-		 */
-		private Image(String filepath) {
-			try {
-				String format = filepath.split("\\.")[1].toUpperCase();
-				InputStream in = ResourceLoader.getResourceAsStream(filepath);
-				texture = TextureLoader.getTexture(format, in);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		/**
-		 * Allows access of the dimensions of the image.
-		 * @return the width of the image in pixels.
-		 */
-		public double width() { 
-			return texture.getTextureWidth();
-		}
-		
-		/**
-		 * Allows access of the dimensions of the image.
-		 * @return the height of the image in pixels.
-		 */
-		public double height() { 
-			return texture.getTextureHeight(); 
-		}
-		
-		/**
-		 * Allows access to the colours of the pixels in the image data of the texture.
-		 * @param x the x coordinate on the image of the pixel.
-		 * @param y the y coordinate on the image of the pixel.
-		 * @return the colour at the specified pixel.
-		 */
-		public Color pixelAt(int x, int y) {
-			int r = texture.getTextureData()[y * (int)width() + x ] * -255;
-			int g = texture.getTextureData()[y * (int)width() + x + 1] * -255;
-			int b = texture.getTextureData()[y * (int)width() + x + 2] * -255;
-			int a = texture.getTextureData()[y * (int)width() + x + 3] * -255;
-			return new Color(r, g, b, a);
-		}
-		
-	}
+	
 	
 	/**
 	 * Represents a quad for drawing rectangular sections of images.
@@ -432,7 +381,7 @@ public abstract class graphics {
 		r = -Math.toDegrees(r);
 		
     	glEnable(GL_TEXTURE_2D);
-    	drawable.texture.bind();
+    	drawable.bind();
 		push();
 	    translate(x, y);
 	    glRotated(r, 0, 0, 1);
@@ -462,7 +411,7 @@ public abstract class graphics {
 		double h = drawable.height();
 		
 		glEnable(GL_TEXTURE_2D);
-    	drawable.texture.bind();
+    	drawable.bind();
 		push();
 	    translate(x, y);
 		glBegin(GL_QUADS);
@@ -491,7 +440,7 @@ public abstract class graphics {
 		double h = quad.quadHeight;
 		
     	glEnable(GL_TEXTURE_2D);
-		drawable.texture.bind();
+		drawable.bind();
 		push();
 		translate(x, y);
 		glBegin(GL_QUADS);
@@ -616,15 +565,6 @@ public abstract class graphics {
 		return new SystemFont(fontName, size);
 	}
 	public static SystemFont newSystemFont(String fontName) { return newSystemFont(fontName, 24); }
-		
-	/**
-	 * Creates and returns a new Image.
-	 * @param filepath
-	 * @return the created image.
-	 */
-	public static Image newImage(String filepath) {
-		return new Image(filepath);
-	}
 	
 	/**
 	 * Creates and returns a new Quad.
