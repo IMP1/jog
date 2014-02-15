@@ -11,5 +11,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="ext/slick.jar"/>
+	<classpathentry kind="lib" path="ext/PNGDecoder.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
