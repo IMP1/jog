@@ -117,7 +117,7 @@ public abstract class window {
 	}
 	
 	private static ByteBuffer loadIcon(String filename, int size) throws IOException {
-		URL url = filesystem.load(filename);
+		URL url = filesystem.getURL(filename);
 		BufferedImage img = ImageIO.read(url);
 		byte[] imageBytes = new byte[size * size * 4];
 	    for (int y = 0; y < size; y++) {
