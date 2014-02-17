@@ -8,7 +8,7 @@ import java.net.URL;
 
 public class filesystem {
 
-	public static URL load(String filename) {
+	public static URL getURL(String filename) {
 		URL url = filesystem.class.getResource(File.separator + filename);
 		if (url == null) {
 			url = filesystem.class.getResource(File.separator + ".." + File.separator + filename);
@@ -22,19 +22,19 @@ public class filesystem {
 		return url;
 	}
 	
-    public static String loadAsString(String filename) throws Exception {
+    public static String load(String filename) throws Exception {
         StringBuilder source = new StringBuilder();
         FileInputStream in = new FileInputStream(filename);
-        BufferedReader reader;
-        try{
-            reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        try {
             for (String line = reader.readLine(); line != null;) {
                 source.append(line).append('\n');
             }
         	reader.close();
         } catch(Exception e) {
         	e.printStackTrace();
-        	System.exit(0);
+        } finally {
+        	reader.close();
         }
         in.close();
         return source.toString();
