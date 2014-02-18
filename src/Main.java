@@ -1,3 +1,5 @@
+import java.io.File;
+
 import org.lwjgl.input.Mouse;
 
 import jog.*;
@@ -29,6 +31,8 @@ public class Main implements jog.input.EventHandler {
 	private void start() {
 		window.initialise(TITLE, WIDTH, HEIGHT);
 		graphics.initialise();
+		filesystem.addLocation("src" + File.separator + "gfx");
+		filesystem.addLocation("src" + File.separator + "sfx");
 		img = image.newImage("ship.png");
 		corner = graphics.newQuad(0, 0, 32, 32, img.width(), img.height());
 		font = graphics.newBitmapFont("font.png", "0123456789().,- ");
