@@ -34,7 +34,7 @@ public class Main implements jog.input.EventHandler {
 		filesystem.addLocation("src" + File.separator + "gfx");
 		filesystem.addLocation("src" + File.separator + "sfx");
 		img = image.newImage("ship.png");
-		corner = graphics.newQuad(0, 0, 32, 32, img.width(), img.height());
+		corner = graphics.newQuad(0, 0, 32, 32, img.width, img.height);
 		font = graphics.newBitmapFont("font.png", "0123456789().,- ");
 		graphics.setFont(font);
 		graphics.setBackgroundColour(0, 128, 128);
