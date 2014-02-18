@@ -76,7 +76,7 @@ public class filesystem {
 	 * @param filename the file to search for.
 	 * @return the path to the file.
 	 */
-	private static String getPath(String filename) {
+	public static String getPath(String filename) {
 		String path = "";
 		File f;
 		for (String loc : locations) {
