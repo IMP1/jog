@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.TrueTypeFont;
 
-import jog.image.Image;
+import jog.image.Image;;
 
 /**
  * <h1>jog.graphics</h1>
@@ -128,9 +128,9 @@ public abstract class graphics {
 		 */
 		@Override
 		protected void print(double x, double y, String text, double size) {
-			double w = image.height();
-			double h = image.height();
-			double qw = w / image.width();
+			double w = image.height;
+			double h = image.height;
+			double qw = w / image.width;
 			double qh = 1;
 			
 	    	glEnable(GL_TEXTURE_2D);
@@ -141,7 +141,7 @@ public abstract class graphics {
 			glScaled(size, size, 1);
 			glBegin(GL_QUADS);
 			for (int i = 0; i < text.length(); i ++) {
-				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width();
+				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width;
 				glTexCoord2d(qx, 0);
 				glVertex2d(w * i, 0);
 				glTexCoord2d(qx + qw, 0);
@@ -166,9 +166,9 @@ public abstract class graphics {
 		 */
 		@Override
 		protected void printCentred(double x, double y, double width, String text, double size) {
-			double w = image.height();
-			double h = image.height();
-			double qw = w / image.width();
+			double w = image.height;
+			double h = image.height;
+			double qw = w / image.width;
 			double qh = 1;
 			x += (width - (w * text.length() * size)) / 2;
 			
@@ -179,7 +179,7 @@ public abstract class graphics {
 			glScaled(size, size, 1);
 			glBegin(GL_QUADS);
 			for (int i = 0; i < text.length(); i ++) {
-				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width();
+				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width;
 				glTexCoord2d(qx, 0);
 				glVertex2d(w * i, 0);
 				glTexCoord2d(qx + qw, 0);
@@ -407,8 +407,8 @@ public abstract class graphics {
 	 * @param y the vertical pixel to draw at.
 	 */
 	public static void draw(Image drawable, double x, double y) {
-		double w = drawable.width();
-		double h = drawable.height();
+		double w = drawable.width;
+		double h = drawable.height;
 		
 		glEnable(GL_TEXTURE_2D);
     	drawable.bind();
