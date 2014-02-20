@@ -30,6 +30,7 @@ Currently does very little.
 #### To Do:
   - load images (using [jog.filesystem](#filesystem))
   - bind image textures for OpenGL
+  - allow direct access of pixels' colours
 
 
 ## <a name="input"></a> input°
