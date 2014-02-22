@@ -109,7 +109,7 @@ public class Main implements jog.input.EventHandler {
 		graphics.draw(img, 0, 0);
 		graphics.pop();
 		
-		graphics.draw(img, 256, 0, rotation, 0, 48, 2, 1);
+		graphics.draw(img, 460, 344, rotation, 35, 48, 1, 1);
 		
 		int triangleX = 192;
 		int triangleY = 256;
