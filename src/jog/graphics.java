@@ -17,14 +17,17 @@ import jog.image.Image;;
 public abstract class graphics {
 	
 	public enum BlendMode {
-		ADDITIVE("additive"), 
-		SUBTRACTIVE("subtractive"), 
-		MULTIPLICATIVE("multiplicative"), 
-		ALPHA("alpha");
+		ADDITIVE(GL_SRC_ALPHA, GL_ONE), 
+		SUBTRACTIVE(GL_ZERO, GL_ONE_MINUS_SRC_COLOR), 
+		MULTIPLICATIVE(GL_DST_COLOR, GL_ZERO), 
+		ALPHA(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		private final String id;
-		BlendMode(String id) { this.id = id; }
-	    public String getValue() { return id; }
+		protected final int arg1;
+		protected final int arg2;
+		BlendMode(int arg1, int arg2) { 
+			this.arg1 = arg1;
+			this.arg2 = arg2;
+		}
 	}
 	
 	/**
@@ -55,7 +58,7 @@ public abstract class graphics {
 			a = (float)(Math.max(0, Math.min(255, alpha)) / 255);
 		}
 		
-		private Colour(int red, int green, int blue) {
+		protected Colour(int red, int green, int blue) {
 			this(red, green, blue, 255);
 		}
 		 
@@ -377,7 +380,7 @@ public abstract class graphics {
 	 * @param ox the x coordinate of the origin of the image around which it is rotated.
 	 * @param oy the y coordinate of the origin of the image around which it is rotated.
 	 */
-	public static void draw(Image drawable, double x, double y, double r, double ox, double oy) {
+	public static void draw(Image drawable, double x, double y, double r, double ox, double oy, double sx, double sy) {
 		r = -Math.toDegrees(r);
 		
     	glEnable(GL_TEXTURE_2D);
@@ -385,7 +388,7 @@ public abstract class graphics {
 		push();
 	    translate(x, y);
 	    glRotated(r, 0, 0, 1);
-	    glScaled(2, 2, 1);
+	    glScaled(sx, sy, 1);
 		glBegin(GL_QUADS);
 			glTexCoord2d(0, 0);
 			glVertex2d(-ox/2, -oy/2);
@@ -594,15 +597,7 @@ public abstract class graphics {
 	 */
 	public static void setBlendMode(BlendMode mode) {
 		currentBlendMode = mode;
-		if (mode == BlendMode.ADDITIVE) {
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		} else if (mode == BlendMode.SUBTRACTIVE) {
-			glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR); 
-		} else if (mode == BlendMode.MULTIPLICATIVE) {
-			glBlendFunc(GL_DST_COLOR, GL_ZERO);
-		} else if (mode == BlendMode.ALPHA) {
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		}
+		glBlendFunc(mode.arg1, mode.arg2);
 	}
 	
 	/**
