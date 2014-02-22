@@ -3,79 +3,102 @@ package jog;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
+import static org.lwjgl.opengl.GL11.*;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
+import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
 import jog.graphics.Colour;
 
 public class image {
 	
-	/**
-	 * <h1>jog.image.Image</h1>
-	 * <p>Essentially an object-orientated wrapper for the slick Texture.</p>
-	 * @author IMP1
-	 * @see Texture
-	 */
+	public enum WrapMode {
+		CLAMP(GL_CLAMP),
+		REPEAT(GL_REPEAT);
+		
+		protected final int glWrapMode;
+		WrapMode(int glWrapMode) { this.glWrapMode = glWrapMode; }
+	}
+	
+	public enum FilterMode {
+		LINEAR(GL_LINEAR),
+		NEAREST(GL_NEAREST);
+		
+		protected final int glFilterMode;
+		FilterMode(int glFilterMode) { this.glFilterMode = glFilterMode; }
+	}
+	
+	public static Image newImage(String filename) {
+		return new Image(filesystem.getPath(filename));
+	}
+	
 	public static class Image {
 		
-		private Texture texture;
+		public final int id;
+		public final int width;
+		public final int height;
+		public final ByteBuffer bytes;
 		
-		/**
-		 * Constructor for an image.
-		 * @param filepath the path to the image file.
-		 */
 		private Image(String filepath) {
+			InputStream in = null;
 			try {
-				String format = filepath.split("\\.")[1].toUpperCase();
-				InputStream in = ResourceLoader.getResourceAsStream(filepath);
-				texture = TextureLoader.getTexture(format, in);
+				in = new FileInputStream(filepath);
+				PNGDecoder decoder = new PNGDecoder(in);
+				width = decoder.getWidth();
+				height = decoder.getHeight();
+				System.out.println("Loaded image: \"" + filepath + "\" with the dimensions: (" + width + ", " + height + ").");
+				bytes = ByteBuffer.allocateDirect(4 * width * height);
+				decoder.decode(bytes, width * 4, Format.RGBA);
+				bytes.flip();
+				in.close();
+				glEnable(GL_TEXTURE_2D);
+				id = glGenTextures();
+				setFilterMode(FilterMode.NEAREST, FilterMode.NEAREST);
+				setWrapMode(WrapMode.CLAMP, WrapMode.CLAMP);
 			} catch (IOException e) {
 				e.printStackTrace();
+				throw new RuntimeException("Image \"" + filepath + "\" failed to load.");
 			}
 		}
 		
 		public void bind() {
-			texture.bind();
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
 		}
 		
-		/**
-		 * Allows access of the dimensions of the image.
-		 * @return the width of the image in pixels.
-		 */
-		public double width() { 
-			return texture.getTextureWidth();
-		}
-		
-		/**
-		 * Allows access of the dimensions of the image.
-		 * @return the height of the image in pixels.
-		 */
-		public double height() { 
-			return texture.getTextureHeight(); 
-		}
-		
-		/**
-		 * Allows access to the colours of the pixels in the image data of the texture.
-		 * @param x the x coordinate on the image of the pixel.
-		 * @param y the y coordinate on the image of the pixel.
-		 * @return the colour at the specified pixel.
-		 */
-		public Colour pixelAt(int x, int y) {
-			int r = texture.getTextureData()[y * (int)width() + x ] * -255;
-			int g = texture.getTextureData()[y * (int)width() + x + 1] * -255;
-			int b = texture.getTextureData()[y * (int)width() + x + 2] * -255;
-			int a = texture.getTextureData()[y * (int)width() + x + 3] * -255;
+		public graphics.Colour pixelAt(int x, int y) {
+			if (x < 0 || x > width) {
+				throw new IndexOutOfBoundsException("Invalid image pixel coordinates: x = " + x);
+			}
+			if (y < 0 || y > height) {
+				throw new IndexOutOfBoundsException("Invalid image pixel coordinates: y = " + y);
+			}
+			int r, g, b, a;
+			int i = (y * width + x) * 4;
+			r = bytes.get(i);
+			g = bytes.get(i+1);
+			b = bytes.get(i+2);
+			a = bytes.get(i+3);
+			if (r < 0) r += 256;
+			if (g < 0) g += 256;
+			if (b < 0) b += 256;
+			if (a < 0) a += 256;
 			return new Colour(r, g, b, a);
 		}
 		
-	}
-
-	public static Image newImage(String filename) {
-		return new Image(filename);
+		public void setFilterMode(FilterMode min, FilterMode mag) {
+			glBindTexture(GL_TEXTURE_2D, id);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min.glFilterMode);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag.glFilterMode);
+		}
+		
+		public void setWrapMode(WrapMode wrapModeX, WrapMode wrapModeY) {
+			glBindTexture(GL_TEXTURE_2D, id);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapModeX.glWrapMode);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapModeY.glWrapMode);
+		}
+		
 	}
 	
 }
