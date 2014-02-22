@@ -34,6 +34,8 @@ public class Main implements jog.input.EventHandler {
 		filesystem.addLocation("src" + File.separator + "gfx");
 		filesystem.addLocation("src" + File.separator + "sfx");
 		img = image.newImage("ship.png");
+		System.out.println(img.pixelAt(35, 40));
+		System.out.println(img.pixelAt(35, 41));
 		corner = graphics.newQuad(0, 0, 32, 32, img.width, img.height);
 		font = graphics.newBitmapFont("font.png", "0123456789().,- ");
 		graphics.setFont(font);
@@ -79,7 +81,6 @@ public class Main implements jog.input.EventHandler {
 		graphics.setBlendMode();
 		
 		graphics.setColour(255, 255, 255);
-		
 		graphics.draw(img, 460, 128);
 		
 		int triangleX = 192;
