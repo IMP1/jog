@@ -41,7 +41,6 @@ public class filesystem {
 		locations.add(path);
 		// TODO remove debugging 'println's
 		for (int i = 0; i < depth; i ++) System.out.print("\t");
-		System.out.println("Added location: \"" + path + "\" to filesystem locations.");
 		// ~~~~~~
 		// If we don't want to look any further
 		if (!subFolders) {			
@@ -83,7 +82,6 @@ public class filesystem {
 			path = loc + File.separator + filename;
 			f = (new File(path)).getAbsoluteFile();
 			if (f.exists()) {
-				System.out.println("\"" + filename + "\" exists at \"" + path + "\".");
 				return path;
 			}
 		}
