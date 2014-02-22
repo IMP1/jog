@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.TrueTypeFont;
 
-import jog.image.Image;;
+import jog.image.Image;
 
 /**
  * <h1>jog.graphics</h1>
