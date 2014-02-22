@@ -1,5 +1,6 @@
 import java.io.File;
 
+import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 
 import jog.*;
@@ -14,21 +15,28 @@ public class Main implements jog.input.EventHandler {
 	final private int WIDTH = 640;
 	final private int HEIGHT = 480;
 	
+	private double lastFrameTime;
+	private double dt;
+	
 	private image.Image img;
 	private graphics.Quad corner;
 	private graphics.Font font;
 	private audio.Sound beep;
 	
+	private double rotation;
+	
 	public Main() {
 		start();
 		while(!window.isClosed()) {
-			update();
+			dt = getDeltaTime();
+			update(dt);
 			draw();
 		}
 		quit();
 	}
 	
 	private void start() {
+		lastFrameTime = (double)(Sys.getTime()) / Sys.getTimerResolution();
 		window.initialise(TITLE, WIDTH, HEIGHT);
 		graphics.initialise();
 		filesystem.addLocation("src" + File.separator + "gfx");
@@ -43,12 +51,25 @@ public class Main implements jog.input.EventHandler {
 		String[] icons = {"icon16.png", "icon32.png", "icon64.png"}; 
 		window.setIcon(icons);
 //		beep = audio.newSoundEffect("beep.ogg");
+		rotation = 0;
 	}
 	
-	private void update() {
+	/**
+	 * Calculates the time taken since the last tick in seconds as a double-precision floating point number.
+	 * @return the time in seconds since the last frame.
+	 */
+	private double getDeltaTime() {
+		double time = (double)(Sys.getTime()) / Sys.getTimerResolution();
+	    double delta = (time - lastFrameTime);
+	    lastFrameTime = time;
+	    return delta;
+	}
+	
+	private void update(double dt) {
 		audio.update();
 		input.update(this);
 		window.update();
+		rotation += dt * Math.PI;
 	}
 	
 	private void draw() {
@@ -81,7 +102,14 @@ public class Main implements jog.input.EventHandler {
 		graphics.setBlendMode();
 		
 		graphics.setColour(255, 255, 255);
-		graphics.draw(img, 460, 128);
+		graphics.push();
+		graphics.translate(460, 128);
+		graphics.scale(2, 2);
+		graphics.rotate(Math.PI / 2);
+		graphics.draw(img, 0, 0);
+		graphics.pop();
+		
+		graphics.draw(img, 256, 0, rotation, 0, 48, 2, 1);
 		
 		int triangleX = 192;
 		int triangleY = 256;
