@@ -381,23 +381,26 @@ public abstract class graphics {
 	 * @param oy the y coordinate of the origin of the image around which it is rotated.
 	 */
 	public static void draw(Image drawable, double x, double y, double r, double ox, double oy, double sx, double sy) {
-		r = -Math.toDegrees(r);
+		double w = drawable.width;
+		double h = drawable.height;
 		
     	glEnable(GL_TEXTURE_2D);
     	drawable.bind();
 		push();
 	    translate(x, y);
-	    glRotated(r, 0, 0, 1);
+	    translate(ox, oy);
+	    rotate(r);
+	    translate(-ox, -oy);
 	    scale(sx, sy);
 		glBegin(GL_QUADS);
 			glTexCoord2d(0, 0);
-			glVertex2d(-ox/2, -oy/2);
+			glVertex2d(0, 0);
 			glTexCoord2d(1, 0);
-			glVertex2d(ox/2, -oy/2);
+			glVertex2d(w, 0);
 			glTexCoord2d(1, 1);
-			glVertex2d(ox/2, oy/2);
+			glVertex2d(w, h);
 			glTexCoord2d(0, 1);
-			glVertex2d(-ox/2, oy/2);
+			glVertex2d(0, h);
 		glEnd();
 		pop();
 		glDisable(GL_TEXTURE_2D);
