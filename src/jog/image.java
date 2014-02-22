@@ -41,6 +41,11 @@ public class image {
 		public final int height;
 		public final ByteBuffer bytes;
 		
+		private FilterMode currentFilterModeMin;
+		private FilterMode currentFilterModeMag;
+		private WrapMode currentWrapModeMin;
+		private WrapMode currentWrapModeMag;
+		
 		private Image(String filepath) {
 			InputStream in = null;
 			try {
@@ -87,16 +92,26 @@ public class image {
 			return new Colour(r, g, b, a);
 		}
 		
-		public void setFilterMode(FilterMode min, FilterMode mag) {
+		public FilterMode getFilterModeMin() { return currentFilterModeMin; }
+		public FilterMode getFilterModeMag() { return currentFilterModeMag; }
+		
+		public void setFilterMode(FilterMode filterModeMin, FilterMode filterModeMag) {
 			glBindTexture(GL_TEXTURE_2D, id);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min.glFilterMode);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag.glFilterMode);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterModeMin.glFilterMode);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterModeMag.glFilterMode);
+			currentFilterModeMin = filterModeMin;
+			currentFilterModeMag = filterModeMag;
 		}
+		
+		public WrapMode getWrapModeMin() { return currentWrapModeMin; }
+		public WrapMode getWrapModeMag() { return currentWrapModeMag; }
 		
 		public void setWrapMode(WrapMode wrapModeX, WrapMode wrapModeY) {
 			glBindTexture(GL_TEXTURE_2D, id);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapModeX.glWrapMode);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapModeY.glWrapMode);
+			currentWrapModeMin = wrapModeX;
+			currentWrapModeMag = wrapModeY;
 		}
 		
 	}
