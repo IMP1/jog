@@ -21,16 +21,13 @@ Currently does very little.
 The graphics module deals with drawing things to the screen. It uses OpenGL and currently relies on Slick for dealing with images. It features many methods for drawing simple shapes and lines, and for changing the colour of things drawn. It has different blend modes, including additive and subtractive, with the default being alpha. It can also rotate and translate drawn objects.
 #### To Do:
   - remove dependencies on Slick*
-    - move image loading and handling into [jog.image](#image)
-    - create image loading and OpenGL texture binding
+    - Rework the way fonts are handled.
 
 
-## <a name="image"></a> image
-Currently does very little.
+## <a name="image"></a> image°
+Loads images into OpenGL-friendly textures, using [Matthias Mann's PNG Decoder](http://hg.l33tlabs.org/twl/file/tip/src/de/matthiasmann/twl/utils/PNGDecoder.java), and allows access to the image's pixel data.
 #### To Do:
-  - load images (using [jog.filesystem](#filesystem))
-  - bind image textures for OpenGL
-  - allow direct access of pixels' colours
+  - Comment it all.
 
 
 ## <a name="input"></a> input°
