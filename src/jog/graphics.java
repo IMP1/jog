@@ -388,7 +388,7 @@ public abstract class graphics {
 		push();
 	    translate(x, y);
 	    glRotated(r, 0, 0, 1);
-	    glScaled(sx, sy, 1);
+	    scale(sx, sy);
 		glBegin(GL_QUADS);
 			glTexCoord2d(0, 0);
 			glVertex2d(-ox/2, -oy/2);
@@ -697,6 +697,15 @@ public abstract class graphics {
 	 */
 	public static void translate(double x, double y) {
 		glTranslated(x, y, 0);
+	}
+	
+	/**
+	 * rotates all drawn things by the angle.
+	 * @param angle the angle, in radians, to rotates by.
+	 */
+	public static void rotate(double angle) {
+		angle = Math.toDegrees(angle);
+		glRotated(angle, 0, 0, 1);
 	}
 	
 	/**
