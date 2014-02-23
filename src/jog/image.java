@@ -12,8 +12,18 @@ import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
 import jog.graphics.Colour;
 
-public class image {
+/**
+ * <h1>jog.image</h1>
+ * <p>Used for loading images, and handling the access of their data, as well as
+ * binding them for OpenGL</p>
+ * @author IMP1
+ */
+public abstract class image {
 	
+	/**
+	 * The different wrap modes available.
+	 * @author IMP1
+	 */
 	public enum WrapMode {
 		CLAMP(GL_CLAMP),
 		REPEAT(GL_REPEAT);
@@ -22,6 +32,10 @@ public class image {
 		WrapMode(int glWrapMode) { this.glWrapMode = glWrapMode; }
 	}
 	
+	/**
+	 * The different filter modes available.
+	 * @author IMP1
+	 */
 	public enum FilterMode {
 		LINEAR(GL_LINEAR),
 		NEAREST(GL_NEAREST);
@@ -30,10 +44,19 @@ public class image {
 		FilterMode(int glFilterMode) { this.glFilterMode = glFilterMode; }
 	}
 	
+	/**
+	 * The different filter modes available.
+	 * @author IMP1
+	 */
 	public static Image newImage(String filename) {
 		return new Image(filesystem.getPath(filename));
 	}
 	
+	/**
+	 * <h1>Image</h1>
+	 * Image class that serves as an openGL texture.
+	 * @author IMP1
+	 */
 	public static class Image {
 		
 		public final int id;
