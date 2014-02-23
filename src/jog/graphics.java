@@ -3,7 +3,6 @@ package jog;
 import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.TrueTypeFont;
 
 import jog.image.Image;
 
@@ -87,169 +86,6 @@ public abstract class graphics {
 	}
 	
 	/**
-	 * <h1>jog.graphics.Font</h1>
-	 * <p>Abstract font class with print methods.</p>
-	 * @author IMP1
-	 */
-	public static abstract class Font {
-		
-		protected abstract void print(double x, double y, String text, double size);
-
-		protected abstract void printCentred(double x, double y, double width, String text, double size);
-		
-	}
-	
-	/**
-	 * <h1>jog.graphics.BitmapFont</h1>
-	 * <p>A font generated from an image. Each glyph is as wide as the entire image as high.</p>
-	 * @author IMP1
-	 */
-	private static class BitmapFont extends Font {
-		
-		/**
-		 * A string containing the characters in the same order that the image has them.
-		 */
-		private String glyphs;
-		private Image image;
-		
-		/**
-		 * Constructor for a bitmap font.
-		 * @param filepath the path to the image file.
-		 * @param chars a String containing the characters in the same order that the image has them.
-		 */
-		private BitmapFont(String filepath, String chars) {
-			image = jog.image.newImage(filepath);
-			glyphs = chars;
-		}
-		
-		/**
-		 * Prints the text to the display.
-		 * @param x the x coordinate for the text to be drawn to.
-		 * @param y the y coordinate for the text to be drawn to.
-		 * @param text the text to be drawn.
-		 * @param size the size of the drawn text.
-		 */
-		@Override
-		protected void print(double x, double y, String text, double size) {
-			double w = image.height;
-			double h = image.height;
-			double qw = w / image.width;
-			double qh = 1;
-			
-	    	glEnable(GL_TEXTURE_2D);
-	    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	    	image.bind();
-			glPushMatrix();
-			glTranslated(x, y, 0);
-			glScaled(size, size, 1);
-			glBegin(GL_QUADS);
-			for (int i = 0; i < text.length(); i ++) {
-				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width;
-				glTexCoord2d(qx, 0);
-				glVertex2d(w * i, 0);
-				glTexCoord2d(qx + qw, 0);
-				glVertex2d(w * (i+1), 0);
-				glTexCoord2d(qx + qw, qh);
-				glVertex2d(w * (i+1), h);
-				glTexCoord2d(qx, qh);
-				glVertex2d(w * i, h);
-			}
-			glEnd();
-			glPopMatrix();
-			glDisable(GL_TEXTURE_2D);
-		}
-		
-		/**
-		 * Prints the text to the display centred within specified boundaries.
-		 * @param x the x coordinate for the text to be drawn to.
-		 * @param y the y coordinate for the text to be drawn to.
-		 * @param width the width the text should be centred around.
-		 * @param text the text to be drawn.
-		 * @param size the size of the drawn text.
-		 */
-		@Override
-		protected void printCentred(double x, double y, double width, String text, double size) {
-			double w = image.height;
-			double h = image.height;
-			double qw = w / image.width;
-			double qh = 1;
-			x += (width - (w * text.length() * size)) / 2;
-			
-			glEnable(GL_TEXTURE_2D);
-	    	image.bind();
-			glPushMatrix();
-			glTranslated(x, y, 0);
-			glScaled(size, size, 1);
-			glBegin(GL_QUADS);
-			for (int i = 0; i < text.length(); i ++) {
-				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width;
-				glTexCoord2d(qx, 0);
-				glVertex2d(w * i, 0);
-				glTexCoord2d(qx + qw, 0);
-				glVertex2d(w * (i+1), 0);
-				glTexCoord2d(qx + qw, qh);
-				glVertex2d(w * (i+1), h);
-				glTexCoord2d(qx, qh);
-				glVertex2d(w * i, h);
-			}
-			glEnd();
-			glPopMatrix();
-			glDisable(GL_TEXTURE_2D);
-		}
-
-	}
-	
-	/**
-	 * <h1>jog.graphics.SystemFont</h1>
-	 * <p>A font that the exists within the default font folder in the OS. Essentially SystemFont is a wrapper for TrueTypeFont.</p>
-	 * @author IMP1
-	 * @see TrueTypeFont
-	 */
-	private static class SystemFont extends Font {
-
-		private TrueTypeFont font;
-		
-		/**
-		 * Constructor for a system font.
-		 * @param name name of the system font.
-		 * @param size the size of the created font.
-		 */
-		private SystemFont(String name, int size) {
-			java.awt.Font awtFont = new java.awt.Font(name, java.awt.Font.PLAIN, size);
-			font = new TrueTypeFont(awtFont, false);
-		}
-		
-		/**
-		 * Prints the text to the display.
-		 * @param x the x coordinate for the text to be drawn to.
-		 * @param y the y coordinate for the text to be drawn to.
-		 * @param text the text to be drawn.
-		 * @param size the size of the drawn text.
-		 */
-		@Override
-		protected void print(double x, double y, String text, double size) {
-			font.drawString((int)x, (int)y, text);
-		}
-
-		/**
-		 * Prints the text to the display centred within specified boundaries.
-		 * @param x the x coordinate for the text to be drawn to.
-		 * @param y the y coordinate for the text to be drawn to.
-		 * @param width the width the text should be centred around.
-		 * @param text the text to be drawn.
-		 * @param size the size of the drawn text.
-		 */
-		@Override
-		public void printCentred(double x, double y, double width, String text, double size) {
-			x += (width - font.getWidth(text)) / 2;
-			font.drawString((int)x, (int)y, text);
-		}
-		
-	}
-	
-	
-	
-	/**
 	 * Represents a quad for drawing rectangular sections of images.
 	 * @author IMP1
 	 */
@@ -278,7 +114,7 @@ public abstract class graphics {
 	}
 	
 	private static BlendMode currentBlendMode;
-	private static Font currentFont;
+	private static font.Font currentFont;
 	private static Colour currentColour;
 	private static Colour backgroundColour;
 	
@@ -505,7 +341,6 @@ public abstract class graphics {
 	 * @param size the size to draw the text at.
 	 */
 	public static void print(String text, double x, double y, double size) {
-		if (currentFont == null) currentFont = newSystemFont("Times New Roman");
 		currentFont.print(x, y, text, size);
 	}
 	public static void print(String text, double x, double y){ print(text, x, y, 1); }
@@ -519,7 +354,6 @@ public abstract class graphics {
 	 * @param width the width the text is centred around.
 	 */
 	public static void printCentred(String text, double x, double y, double size, double width) {
-		if (currentFont == null) currentFont = newSystemFont("Times New Roman");
 		currentFont.printCentred(x, y, width, text, size);
 	}
 
@@ -550,27 +384,6 @@ public abstract class graphics {
 	public static void triangle(boolean fill, double x1, double y1, double x2, double y2, double x3, double y3) {
 		polygon(fill, x1, y1, x2, y2, x3, y3);
 	}
-
-	/**
-	 * Creates and returns a new BitmapFont.
-	 * @param filepath the path to the image file.
-	 * @param glyphs the String containing the characters the image represents.
-	 * @return the created font.
-	 */
-	public static BitmapFont newBitmapFont(String filepath, String glyphs) {
-		return new BitmapFont(filepath, glyphs);
-	}
-	
-	/**
-	 * Creates and returns a new SystemFont.
-	 * @param fontName the name of the font.
-	 * @param size the size of the font to be created.
-	 * @return the created font.
-	 */
-	public static SystemFont newSystemFont(String fontName, int size) {
-		return new SystemFont(fontName, size);
-	}
-	public static SystemFont newSystemFont(String fontName) { return newSystemFont(fontName, 24); }
 	
 	/**
 	 * Creates and returns a new Quad.
@@ -674,7 +487,7 @@ public abstract class graphics {
 	 * Sets the font to print text with.
 	 * @param font the new font to be active.
 	 */
-	public static void setFont(Font font) {
+	public static void setFont(font.Font font) {
 		currentFont = font;
 	}
 
