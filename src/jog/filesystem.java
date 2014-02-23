@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * <p>Used for accessing files within the project.</p>
  * @author IMP1
  */
-public class filesystem {
+public abstract class filesystem {
 
 	/**
 	 * Holds locations to be searched for files.
