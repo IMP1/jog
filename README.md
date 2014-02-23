@@ -2,7 +2,7 @@
 
 Built on top of the [LWJGL](http://lwjgl.org/), and heavily based upon [LÖVE](https://love2d.org/), JÖG is a game library that provides only what is necessary, and not too much more.
 
-## <a name="audio"></a> audio
+## <a name="audio"></a> audio°
 The audio module deals with music and sound effects. It uses OpenAL and currently accepts .ogg filetypes.
 #### To Do:
   - Remove depenencies on Slick*.
@@ -10,40 +10,40 @@ The audio module deals with music and sound effects. It uses OpenAL and currentl
   - Add .mp3 and .wav support.
 
 
-## <a name="filesystem"></a> filesystem°
+## <a name="filesystem"></a> filesystem
 Handles searching multiple locations for files, and can convert paths to URLs.
 #### To Do:
   - ??? (I'm sure lots more can be added).
 
   
-## <a name="font"></a> font°
+## <a name="font"></a> font
 Currently only handles bitmap fonts, and only very basically.
 #### To Do:
   - Add different widths for each glpyh in a bitmap font.
   - Add TrueTypeFont support.
 
   
-## <a name="graphics"></a> graphics°
+## <a name="graphics"></a> graphics
 The graphics module deals with drawing things to the screen. It uses OpenGL and currently relies on Slick for dealing with images. It features many methods for drawing simple shapes and lines, and for changing the colour of things drawn. It has different blend modes, including additive and subtractive, with the default being alpha. It can also rotate and translate drawn objects.
 #### To Do:
   - Add off-screen render targets (canvases).
   - Handle GLSL shaders.
 
 
-## <a name="image"></a> image°
+## <a name="image"></a> image
 Loads images into OpenGL-friendly textures, using [Matthias Mann's PNG Decoder](http://hg.l33tlabs.org/twl/file/tip/src/de/matthiasmann/twl/utils/PNGDecoder.java), and allows access to the image's pixel data.
 #### To Do:
   - Comment it all.
 
 
-## <a name="input"></a> input°
+## <a name="input"></a> input
 Allows the status of keyboard and mouse buttons (whether they're pressed or not), and has callbacks for when they are pressed and released.
 #### To Do:
   - Add gamepad support
   - Maybe add touch support (not sure how this works on PCs)
 
 
-## <a name="network"></a> network°
+## <a name="network"></a> network
 Does nothing yet.
 #### To Do:
   - Add server and client creation
@@ -51,7 +51,7 @@ Does nothing yet.
   - Add callbacks for connections, disconnections and messages
 
 
-## <a name="window"></a> window°
+## <a name="window"></a> window
 Allows creation of the window, and setting of certain settings, such as the title, icon and dimensions.
 #### To Do:
   - Add checking of window is currently in focus
@@ -64,4 +64,4 @@ Allows creation of the window, and setting of certain settings, such as the titl
 
 \* I have no problem with [Slick](http://slick.ninjacave.com/) (It's a great library full of features), I'd just rather have JÖG not rely on a library that it only uses for a couple of things.
 
-° modules are Slick-free.
+° modules are not Slick-free.
