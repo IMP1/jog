@@ -17,7 +17,7 @@ import static org.lwjgl.opengl.GL11.glTranslated;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 import jog.image.Image;
 
-public class font {
+public abstract class font {
 	
 	public static abstract class Font {
 		
