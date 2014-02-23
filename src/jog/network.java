@@ -1,6 +1,6 @@
 package jog;
 
-public class network {
+public abstract class network {
 	
 	
 
