@@ -20,7 +20,7 @@ public class Main implements jog.input.EventHandler {
 	
 	private image.Image img;
 	private graphics.Quad corner;
-	private graphics.Font font;
+	private jog.font.Font font;
 	private audio.Sound beep;
 	
 	private double rotation;
@@ -45,7 +45,7 @@ public class Main implements jog.input.EventHandler {
 		System.out.println(img.pixelAt(35, 40));
 		System.out.println(img.pixelAt(35, 41));
 		corner = graphics.newQuad(0, 0, 32, 32, img.width, img.height);
-		font = graphics.newBitmapFont("font.png", "0123456789().,- ");
+		font = jog.font.newBitmapFont("font.png", "0123456789().,- ");
 		graphics.setFont(font);
 		graphics.setBackgroundColour(0, 128, 128);
 		String[] icons = {"icon16.png", "icon32.png", "icon64.png"}; 
