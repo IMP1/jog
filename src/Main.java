@@ -21,7 +21,7 @@ public class Main implements jog.input.EventHandler {
 	private image.Image img;
 	private graphics.Quad corner;
 	private jog.font.Font font;
-	private audio.Sound beep;
+	private audio.Source beep;
 	
 	private double rotation;
 	
@@ -103,13 +103,14 @@ public class Main implements jog.input.EventHandler {
 		
 		graphics.setColour(255, 255, 255);
 		graphics.push();
-		graphics.translate(460, 128);
+		graphics.translate(544, 192);
 		graphics.scale(2, 2);
 		graphics.rotate(Math.PI / 2);
 		graphics.draw(img, 0, 0);
 		graphics.pop();
 		
 		graphics.draw(img, 460, 344, rotation, 35, 48, 1, 1);
+		graphics.draw(img, 352, 344, -rotation, 35, 48, 1, 1);
 		
 		int triangleX = 192;
 		int triangleY = 256;
