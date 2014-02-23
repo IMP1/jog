@@ -5,23 +5,29 @@ Built on top of the [LWJGL](http://lwjgl.org/), and heavily based upon [LÖVE](h
 ## <a name="audio"></a> audio
 The audio module deals with music and sound effects. It uses OpenAL and currently accepts .ogg filetypes.
 #### To Do:
-  - Remove depenencies on Slick*
-    - Add a way to load music files
-  - Add .mp3 and .wav support
+  - Remove depenencies on Slick*.
+    - Add a way to load and play music files.
+  - Add .mp3 and .wav support.
 
 
 ## <a name="filesystem"></a> filesystem°
-Currently does very little.
+Handles searching multiple locations for files, and can convert paths to URLs.
 #### To Do:
-  - convert filepaths to find files within project/appdata folder.
-  - load files from within project/appdata folder.
- 
+  - ??? (I'm sure lots more can be added).
 
-## <a name="graphics"></a> graphics
+  
+## <a name="font"></a> font°
+Currently only handles bitmap fonts, and only very basically.
+#### To Do:
+  - Add different widths for each glpyh in a bitmap font.
+  - Add TrueTypeFont support.
+
+  
+## <a name="graphics"></a> graphics°
 The graphics module deals with drawing things to the screen. It uses OpenGL and currently relies on Slick for dealing with images. It features many methods for drawing simple shapes and lines, and for changing the colour of things drawn. It has different blend modes, including additive and subtractive, with the default being alpha. It can also rotate and translate drawn objects.
 #### To Do:
-  - remove dependencies on Slick*
-    - Rework the way fonts are handled.
+  - Add off-screen render targets (canvases).
+  - Handle GLSL shaders.
 
 
 ## <a name="image"></a> image°
@@ -37,7 +43,7 @@ Allows the status of keyboard and mouse buttons (whether they're pressed or not)
   - Maybe add touch support (not sure how this works on PCs)
 
 
-## <a name="network"></a> network
+## <a name="network"></a> network°
 Does nothing yet.
 #### To Do:
   - Add server and client creation
