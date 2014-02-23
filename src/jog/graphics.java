@@ -15,6 +15,10 @@ import jog.image.Image;
  */
 public abstract class graphics {
 	
+	/**
+	 * The different blend modes available
+	 * @author IMP1
+	 */
 	public enum BlendMode {
 		ADDITIVE(GL_SRC_ALPHA, GL_ONE), 
 		SUBTRACTIVE(GL_ZERO, GL_ONE_MINUS_SRC_COLOR), 
