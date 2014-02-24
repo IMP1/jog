@@ -1,24 +1,21 @@
 package jog;
 
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTexCoord2d;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL11.glTranslated;
-import static org.lwjgl.opengl.GL11.glVertex2d;
+import static org.lwjgl.opengl.GL11.*;
 import jog.image.Image;
 
+/**
+ * <h1>jog.font</h1>
+ * <p>Handles loading and drawing fonts, including those generated
+ * from bitmap images.</p>
+ * @author IMP1
+ */
 public abstract class font {
 	
+	/**
+	 * <h1>Font</h1>
+	 * <p>Abstract font class that contains methods all different fonts must have.</p>
+	 * @author IMP1
+	 */
 	public static abstract class Font {
 		
 		protected abstract void print(double x, double y, String text, double size);
@@ -30,7 +27,7 @@ public abstract class font {
 	}
 	
 	/**
-	 * <h1>jog.graphics.BitmapFont</h1>
+	 * <h1>BitmapFont</h1>
 	 * <p>A font generated from an image. Each glyph is as wide as the entire image as high.</p>
 	 * @author IMP1
 	 */
