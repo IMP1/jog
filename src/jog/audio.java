@@ -5,7 +5,6 @@ import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
 
-
 /**
  * <h1>jog.audio</h1>
  * <p>Provides loading and playing of various image filetypes.</p>
@@ -13,14 +12,14 @@ import org.lwjgl.openal.AL;
  */
 public abstract class audio {
 	
-	private static FloatBuffer listenerPosition = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-	private static FloatBuffer listenerVelocity = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-	private static FloatBuffer listenerOrientation = BufferUtils.createFloatBuffer(6).put(new float[] { 0.0f, 0.0f, -1.0f,  0.0f, 1.0f, 0.0f });
+	protected static FloatBuffer listenerPosition = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
+	protected static FloatBuffer listenerVelocity = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
+	protected static FloatBuffer listenerOrientation = BufferUtils.createFloatBuffer(6).put(new float[] { 0.0f, 0.0f, -1.0f,  0.0f, 1.0f, 0.0f });
 	
-	public abstract class Source {
+	public static abstract class Source {
 		
-		private FloatBuffer position;
-		private FloatBuffer velocity;
+		protected FloatBuffer position;
+		protected FloatBuffer velocity;
 		
 		public abstract void play();
 		public abstract void stop();
