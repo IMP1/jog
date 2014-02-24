@@ -90,7 +90,8 @@ public abstract class graphics {
 	}
 	
 	/**
-	 * Represents a quad for drawing rectangular sections of images.
+	 * <h1>Quad</h1>
+	 * <p>Represents a quad for drawing rectangular sections of images.</p>
 	 * @author IMP1
 	 */
 	public static class Quad {
@@ -117,10 +118,12 @@ public abstract class graphics {
 		
 	}
 	
-	private static BlendMode currentBlendMode;
-	private static font.Font currentFont;
-	private static Colour currentColour;
-	private static Colour backgroundColour;
+	private static BlendMode currentBlendMode = null;
+	private static font.Font currentFont = null;
+	private static Colour currentColour = null;
+	private static Colour backgroundColour = null;
+	
+	private static boolean initialised = false;
 	
 	/**
 	 * Intialises OpenGL with the appropriate matrix modes and orthographic dimensions. 
@@ -129,11 +132,17 @@ public abstract class graphics {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, window.width(), window.height(), 0, -1, 1);
+		glViewport(0, 0, window.width(), window.height());
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_BLEND);
-		setBlendMode();
-		setBackgroundColour(0, 0, 0);
-		setColour(255, 255, 255);
+		if (currentBlendMode == null) setBlendMode();
+		if (backgroundColour == null) setBackgroundColour(0, 0, 0);
+		if (currentColour == null) setColour(255, 255, 255);
+		initialised = true;
+	}
+	
+	public static boolean isInitialised() {
+		return initialised;
 	}
 
 	/**
