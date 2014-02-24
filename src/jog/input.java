@@ -16,7 +16,7 @@ public abstract class input {
 	 * Interface for a class that is to receive keyboard and mouse events.
 	 * @author IMP1
 	 */
-	public interface EventHandler {
+	public interface InputEventHandler {
 		
 		public void mousePressed(int key, int x, int y);
 		public void mouseReleased(int key, int x, int y);
@@ -49,7 +49,7 @@ public abstract class input {
 	 * Updates the input buffer, collecting keyboard and mouse events
 	 * @param handler
 	 */
-	public static void update(EventHandler handler) {
+	public static void update(InputEventHandler handler) {
 		while (Mouse.next()) {
 			if (Mouse.getEventButtonState()) {
 				if (Mouse.getEventButton() >= 0) {
