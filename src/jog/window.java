@@ -1,5 +1,7 @@
 package jog;
 
+import static org.lwjgl.opengl.GL11.glOrtho;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -10,6 +12,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 
 /**
  * <h1>jog.window</h1>
@@ -18,6 +21,9 @@ import org.lwjgl.opengl.DisplayMode;
  */
 public abstract class window {
 	
+	/**
+	 * Target Frames per Second
+	 */
 	final private static int FPS = 60;
 	
 	private static int width;
@@ -47,14 +53,17 @@ public abstract class window {
 	 * <p>It does this by creating a new DisplayMode with a specified
 	 * width and height, and sets the Display's DisplayMode to 
 	 * that new DisplayMode.</p>
-	 * @param width the new width for the window.
-	 * @param height the new height for the window.
+	 * @param newWidth the new width for the window.
+	 * @param newHeight the new height for the window.
 	 */
-	public static void setSize(int width, int height) {
+	public static void setSize(int newWidth, int newHeight) {
 		try {
-			Display.setDisplayMode(new DisplayMode(width, height));
-			window.width = width;
-			window.height = height;
+			Display.setDisplayMode(new DisplayMode(newWidth, newHeight));
+			width = newWidth;
+			height = newHeight;
+			if (graphics.isInitialised()) {
+				graphics.initialise();
+			}
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
