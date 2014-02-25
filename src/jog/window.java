@@ -1,7 +1,5 @@
 package jog;
 
-import static org.lwjgl.opengl.GL11.glOrtho;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -12,7 +10,6 @@ import javax.imageio.ImageIO;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 
 /**
  * <h1>jog.window</h1>
