@@ -1,11 +1,8 @@
 import java.io.File;
 
 import org.lwjgl.Sys;
-import org.lwjgl.input.Mouse;
 
-import jog.*;
-
-public class Main implements jog.input.EventHandler {
+public class Main implements jog.input.InputEventHandler, jog.network.NetworkEventHandler {
 	
 	public static void main(String[] args) {
 		new Main();
@@ -18,16 +15,19 @@ public class Main implements jog.input.EventHandler {
 	private double lastFrameTime;
 	private double dt;
 	
-	private image.Image img;
-	private graphics.Quad corner;
+	private jog.image.Image img;
+	private jog.graphics.Quad corner;
 	private jog.font.Font font;
-	private audio.Source beep;
 	
 	private double rotation;
 	
+	private String multiplayerRole = "";
+	private jog.network.Server server = null;
+	private jog.network.Client client = null;
+	
 	public Main() {
 		start();
-		while(!window.isClosed()) {
+		while(!jog.window.isClosed()) {
 			dt = getDeltaTime();
 			update(dt);
 			draw();
@@ -37,19 +37,19 @@ public class Main implements jog.input.EventHandler {
 	
 	private void start() {
 		lastFrameTime = (double)(Sys.getTime()) / Sys.getTimerResolution();
-		window.initialise(TITLE, WIDTH, HEIGHT);
-		graphics.initialise();
-		filesystem.addLocation("src" + File.separator + "gfx");
-		filesystem.addLocation("src" + File.separator + "sfx");
-		img = image.newImage("ship.png");
+		jog.window.initialise(TITLE, WIDTH, HEIGHT);
+		jog.graphics.initialise();
+		jog.filesystem.addLocation("src" + File.separator + "gfx");
+		jog.filesystem.addLocation("src" + File.separator + "sfx");
+		img = jog.image.newImage("ship.png");
 		System.out.println(img.pixelAt(35, 40));
 		System.out.println(img.pixelAt(35, 41));
-		corner = graphics.newQuad(0, 0, 32, 32, img.width, img.height);
-		font = jog.font.newBitmapFont("font.png", "0123456789().,- ");
-		graphics.setFont(font);
-		graphics.setBackgroundColour(0, 128, 128);
+		corner = jog.graphics.newQuad(0, 0, 32, 32, img.width, img.height);
+		font = jog.font.newBitmapFont("font.png", "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz1234567890.,_-!?()[]><#~:;/\\^'\"{}£$@@@@@@@@");
+		jog.graphics.setFont(font);
+		jog.graphics.setBackgroundColour(0, 128, 128);
 		String[] icons = {"icon16.png", "icon32.png", "icon64.png"}; 
-		window.setIcon(icons);
+		jog.window.setIcon(icons);
 //		beep = audio.newSoundEffect("beep.ogg");
 		rotation = 0;
 	}
@@ -66,51 +66,38 @@ public class Main implements jog.input.EventHandler {
 	}
 	
 	private void update(double dt) {
-		audio.update();
-		input.update(this);
-		window.update();
+		jog.audio.update();
+		jog.input.update(this);
+		jog.window.update();
+		
 		rotation += dt * Math.PI;
 	}
 	
 	private void draw() {
-		graphics.clear();
-		graphics.setColour(255, 255, 255);
+		jog.graphics.clear();
+		jog.graphics.setColour(255, 255, 255);
 		//--------------------------------\\		
-		graphics.drawq(img, corner, 544, 416);
-
+		jog.graphics.drawq(img, corner, 544, 416);
+		
 		int length = 32;
-		graphics.setColour(0, 0, 0);
-		graphics.circle(true, 128, 64 + Math.sin(Math.PI / 3) * length / 1.5, 64);
-		graphics.setBlendMode(graphics.BlendMode.ADDITIVE);
-		graphics.setColour(255, 0, 0);
-		graphics.circle(true, 128, 64, 32);
-		graphics.setColour(0, 255, 0);
-		graphics.circle(true, 128 - Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
-		graphics.setColour(0, 0, 255);
-		graphics.circle(true, 128 + Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
-		graphics.setBlendMode();
+		jog.graphics.setColour(0, 0, 0);
+		jog.graphics.circle(true, 128, 64 + Math.sin(Math.PI / 3) * length / 1.5, 64);
+		drawCircles(0, length, jog.graphics.BlendMode.ADDITIVE);
 		
-		graphics.setColour(255, 255, 255);
-		graphics.circle(true, 344, 64 + Math.sin(Math.PI / 3) * length / 1.5, 64);
-		graphics.setBlendMode(graphics.BlendMode.SUBTRACTIVE);
-		graphics.setColour(255, 0, 0);
-		graphics.circle(true, 344, 64, 32);
-		graphics.setColour(0, 255, 0);
-		graphics.circle(true, 344 - Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
-		graphics.setColour(0, 0, 255);
-		graphics.circle(true, 344 + Math.cos(Math.PI / 3) * length, 64 + Math.sin(Math.PI / 3) * length, 32);
-		graphics.setBlendMode();
+		jog.graphics.setColour(255, 255, 255);
+		jog.graphics.circle(true, 344, 64 + Math.sin(Math.PI / 3) * length / 1.5, 64);
+		drawCircles(344 - 128, length, jog.graphics.BlendMode.SUBTRACTIVE);
 		
-		graphics.setColour(255, 255, 255);
-		graphics.push();
-		graphics.translate(544, 192);
-		graphics.scale(2, 2);
-		graphics.rotate(Math.PI / 2);
-		graphics.draw(img, 0, 0);
-		graphics.pop();
+		jog.graphics.setColour(255, 255, 255);
+		jog.graphics.push();
+		jog.graphics.translate(544, 192);
+		jog.graphics.scale(2, 2);
+		jog.graphics.rotate(Math.PI / 2);
+		jog.graphics.draw(img, 0, 0);
+		jog.graphics.pop();
 		
-		graphics.draw(img, 460, 344, rotation, 35, 48, 1, 1);
-		graphics.draw(img, 352, 344, -rotation, 35, 48, 1, 1);
+		jog.graphics.draw(img, 460, 344, rotation, 35, 48, 1, 1);
+		jog.graphics.draw(img, 352, 344, -rotation, 35, 48, 1, 1);
 		
 		int triangleX = 192;
 		int triangleY = 256;
@@ -118,7 +105,7 @@ public class Main implements jog.input.EventHandler {
 		double radius;
 		int direction;
 		for (int i = 0; i < 5; i ++) {
-			graphics.setColour(255 / (i+1), 255 / (i+1), 255 / (i+1));
+			jog.graphics.setColour(255 / (i+1), 255 / (i+1), 255 / (i+1));
 			direction = (i % 2) * 2 - 1;
 			radius = length * (Math.sqrt(3) / 7.0);
 			int x1 = triangleX;
@@ -127,37 +114,53 @@ public class Main implements jog.input.EventHandler {
 			int y1 = (int) (triangleY - direction * (Math.sin(Math.PI / 3) * length - radius));
 			int y2 = (int) (triangleY + direction * Math.sin(Math.PI / 6) * radius);
 			int y3 = (int) (triangleY + direction * Math.sin(Math.PI / 6) * radius);
-			graphics.triangle(true, x1, y1, x2, y2, x3, y3);
+			jog.graphics.triangle(true, x1, y1, x2, y2, x3, y3);
 			triangleY -= direction * radius * 6 / 8;
 			length = (int) (radius * 2);
 		}
 		
 		length = 64;
-		graphics.push();
-		graphics.translate(256, -224);
-		graphics.polygon(true, -length, 0, -length * Math.sin(Math.PI/6), -length * Math.cos(Math.PI/6), length * Math.sin(Math.PI/6), -length * Math.cos(Math.PI/6), 
+		jog.graphics.push();
+		jog.graphics.translate(256, -224);
+		jog.graphics.polygon(true, -length, 0, -length * Math.sin(Math.PI/6), -length * Math.cos(Math.PI/6), length * Math.sin(Math.PI/6), -length * Math.cos(Math.PI/6), 
 								length, 0,  length * Math.sin(Math.PI/6), length * Math.cos(Math.PI/6), -length * Math.sin(Math.PI/6), length * Math.cos(Math.PI/6));
-		graphics.pop();
+		jog.graphics.pop();
 		
-		graphics.rectangle(false, 8, 32, 4, 128);
+		jog.graphics.rectangle(false, 8, 32, 4, 128);
+		
+		jog.graphics.setColour(255, 255, 255);
+		jog.graphics.print(multiplayerRole, 0, 12);
 		
 		//--------------------------------\\
-		graphics.setColour(255, 255, 255);
-		int x = Mouse.getX();
-		int y = window.height() - Mouse.getY();
-		graphics.print("(" + x + ", " + y + ")", 0, 0);
-		graphics.setColour(0, 64, 128, 128);
+		jog.graphics.setColour(255, 255, 255);
+		int x = jog.input.mouseX();
+		int y = jog.input.mouseY();
+		jog.graphics.print("(" + x + ", " + y + ")", 0, 0);
+		jog.graphics.setColour(0, 64, 128, 128);
 		int r = 10;
-		graphics.line(x, 0, x, y-r);
-		graphics.line(0, y, x-r, y);
-		graphics.line(x, y+r, x, window.height());
-		graphics.line(x+r, y, window.width(), y);
-		graphics.circle(false, x, y, r);
+		jog.graphics.line(x, 0, x, y-r);
+		jog.graphics.line(0, y, x-r, y);
+		jog.graphics.line(x, y+r, x, jog.window.height());
+		jog.graphics.line(x+r, y, jog.window.width(), y);
+		jog.graphics.circle(false, x, y, r);
+		
+		
+	}
+	
+	private void drawCircles(int x, int size, jog.graphics.BlendMode blendMode) {
+		jog.graphics.setBlendMode(blendMode);
+		jog.graphics.setColour(255, 0, 0);
+		jog.graphics.circle(true, 128 + x, 64, 32);
+		jog.graphics.setColour(0, 255, 0);
+		jog.graphics.circle(true, 128 + x - Math.cos(Math.PI / 3) * size, 64 + Math.sin(Math.PI / 3) * size, 32);
+		jog.graphics.setColour(0, 0, 255);
+		jog.graphics.circle(true, 128 + x + Math.cos(Math.PI / 3) * size, 64 + Math.sin(Math.PI / 3) * size, 32);
+		jog.graphics.setBlendMode();
 	}
 	
 	private void quit() {
-		window.dispose();
-		audio.dispose();
+		jog.window.dispose();
+		jog.audio.dispose();
 	}
 
 	@Override
@@ -172,7 +175,23 @@ public class Main implements jog.input.EventHandler {
 
 	@Override
 	public void keyPressed(int key) {
-		if (key == input.KEY_SPACE) beep.play();
+		if (key == jog.input.KEY_1) {
+			System.out.println("Creating Server...");
+			multiplayerRole = "Server";
+		}
+		if (key == jog.input.KEY_2) {
+			System.out.println("Creating Client...");
+			multiplayerRole = "Client";
+		}
+		if (key == jog.input.KEY_SPACE) {
+			
+			if (jog.window.width() == 640) {
+				jog.window.setSize(960, 640);
+			} else {
+				jog.window.setSize(640, 480);
+			}
+			
+		}
 	}
 
 	@Override
