@@ -2,7 +2,13 @@ package jog;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import org.lwjgl.opengl.GL11;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import static org.lwjgl.opengl.ARBFragmentShader.*;
+import static org.lwjgl.opengl.ARBShaderObjects.*;
+import static org.lwjgl.opengl.ARBVertexShader.*;
 
 import jog.image.Image;
 
@@ -118,6 +124,176 @@ public abstract class graphics {
 		
 	}
 	
+	/**
+	 * <h1>Shader</h1>
+	 * <p>Represents GLSL shaders for altering the GL draw pipeline.</p>
+	 * @author IMP1
+	 */
+	public static class Shader {
+		
+		/**
+		 * The GL shader programme's ID.
+		 */
+		protected final int programmeID;
+		
+		private final int vertexShaderID;
+		private final int fragmentShaderID;
+		
+		/**
+		 * Creates a shader programme, assuming that only the filename without an extension is given, and that there exists
+		 * both a .vert and a .frag for this filename.
+		 * @param filepath the filepath without a file extension.
+		 */
+		private Shader(String filepath) {
+			this(filepath.concat(".vert"), filepath.concat(".frag"));
+		}
+		
+		/**
+		 * Creates a shader programme from a file containing GLSL code for a vertex shader, and one for a fragment shader.
+		 * @param vertexFilepath the filepath to the vertex shader.
+		 * @param fragmentFilepath the filepath to the fragment shader.
+		 */
+		private Shader(String vertexFilepath, String fragmentFilepath) {
+			// Get unique IDs that GL will recognise as this.
+			programmeID = glCreateProgramObjectARB();
+			vertexShaderID = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+			fragmentShaderID = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+			// Load vertex shader to a string.
+			StringBuilder vertexSource = new StringBuilder();
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(filesystem.getPath(vertexFilepath)));
+				for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+					vertexSource.append(line).append('\n');
+				}
+				reader.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+				System.err.println("Vertex shader source could not be read.");
+				window.dispose();
+				System.exit(1);
+			}
+			// Load fragment shader to a string.
+			StringBuilder fragmentSource = new StringBuilder();
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(filesystem.getPath(fragmentFilepath)));
+				for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+					fragmentSource.append(line).append('\n');
+				}
+				reader.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+				System.err.println("Fragment shader source could not be read.");
+				window.dispose();
+				System.exit(1);
+			}
+			// Link and compile the source to the vertex shader.
+			glShaderSourceARB(vertexShaderID, vertexSource);
+			glCompileShaderARB(vertexShaderID);
+			if (glGetObjectParameteriARB(vertexShaderID, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
+				System.err.println("Error creating vertex shader");
+			}
+			// Link and compile the source to the fragment shader.
+			glShaderSourceARB(fragmentShaderID, fragmentSource);
+			glCompileShaderARB(fragmentShaderID);
+			if (glGetObjectParameteriARB(fragmentShaderID, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
+				System.err.println("Error creating fragment shader");
+			}
+			// Attach the vertex and fragment shaders to this shader programme.
+			glAttachObjectARB(programmeID, vertexShaderID);
+			glAttachObjectARB(programmeID, fragmentShaderID);
+			// Link the shader programme.
+			glLinkProgramARB(programmeID);
+			if (glGetObjectParameteriARB(programmeID, GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
+	            System.err.println("Error with the link.");
+	            String errorLog = glGetInfoLogARB(programmeID, glGetObjectParameteriARB(programmeID, GL_OBJECT_INFO_LOG_LENGTH_ARB));
+	            System.err.println(errorLog);
+	            return;
+	        }
+			// Validate the shader programme.
+			glValidateProgramARB(programmeID);
+	        glValidateProgramARB(programmeID);
+	        if (glGetObjectParameteriARB(programmeID, GL_OBJECT_VALIDATE_STATUS_ARB) == GL_FALSE) {
+	        	System.err.println("Error with the validation.");
+	        	String errorLog = glGetInfoLogARB(programmeID, glGetObjectParameteriARB(programmeID, GL_OBJECT_INFO_LOG_LENGTH_ARB));
+	            System.err.println(errorLog);
+	        	return;
+	        }
+		}
+		
+		/**
+		 * Sets the shader to affect following draw processes.
+		 */
+		private void set() {
+			glUseProgramObjectARB(programmeID);
+		}
+		
+		/**
+		 * Unsets the shader, removing its affect on following draw processes.
+		 */
+		private void unset() {
+			glUseProgramObjectARB(0);
+		}
+		
+		public void setVariable(String variableName, int value) {
+			int variableLocation = glGetUniformLocationARB(programmeID, variableName);
+			glUniform1iARB(variableLocation, value);
+		}
+		
+		public void setVariable(String variableName, float value) {
+			set();
+			int variableLocation = glGetUniformLocationARB(programmeID, variableName);
+			glUniform1fARB(variableLocation, value);
+			unset();
+		}
+		
+		public void dispose() {
+			unset();
+			glDetachObjectARB(programmeID, vertexShaderID);
+			glDetachObjectARB(programmeID, fragmentShaderID);
+			glDeleteObjectARB(vertexShaderID);
+			glDeleteObjectARB(fragmentShaderID);
+			glDeleteObjectARB(programmeID);
+		}
+		
+	}
+	
+	public static class Canvas {
+		
+		/**
+		 * The GL shader programme's ID.
+		 */
+		protected final int id;
+		
+		private Canvas(int id) {
+			this.id = id;
+		}
+		
+		/**
+		 * Sets this canvas to be drawn to, rather than the window.
+		 */
+		private void set() {
+			
+		}
+		
+		/**
+		 * Unsets this canvas, reverting to the window to draw things to.
+		 */
+		private void unset() {
+			
+		}
+		
+		/**
+		 * Sets the canvas for drawing.
+		 * @see image.Image#bind()
+		 */
+		protected void bind() {
+			
+		}
+		
+	}
+	
+	private static Canvas currentCanvas = null;
+	private static Shader currentShader = null;
 	private static BlendMode currentBlendMode = null;
 	private static font.Font currentFont = null;
 	private static Colour currentColour = null;
@@ -154,7 +330,7 @@ public abstract class graphics {
 //		} catch (org.lwjgl.LWJGLException e) {
 //			e.printStackTrace();
 //		}
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	/**
@@ -410,6 +586,43 @@ public abstract class graphics {
 	 */
 	public static Quad newQuad(double x, double y, double quadWidth, double quadHeight, double imageWidth, double imageHeight) {
 		return new Quad(x, y, quadWidth, quadHeight, imageWidth, imageHeight);
+	}
+	
+	/**
+	 * Creates and returns a new Shader.
+	 * @param vertFilepath the filepath to the vertex shader to use.
+	 * @param fragmentFilepath the filepath to the fragment shader to use.
+	 * @return the created shader.
+	 */
+	public static Shader newShader(String vertFilepath, String fragmentFilepath) {
+		return new Shader(vertFilepath, fragmentFilepath);
+	}
+	
+	/**
+	 * Accesses the current shader affecting draw functions.
+	 * @return the current shader.
+	 */
+	public static Shader getShader() {
+		return currentShader;
+	}
+	
+	/**
+	 * Sets the shader to affect all things drawn until the shader is changed again.
+	 * @param shader
+	 */
+	public static void setShader(Shader shader) {
+		shader.set();
+		currentShader = shader;
+	}
+	
+	/**
+	 * Removes the current shader affecting
+	 */
+	public static void setShader() {
+		if (currentShader != null) {
+			currentShader.unset();
+		}
+		currentShader = null;
 	}
 	
 	/**
