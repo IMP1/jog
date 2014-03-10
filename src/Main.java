@@ -1,5 +1,8 @@
 import java.io.File;
 
+import jog.input;
+import jog.window;
+
 import org.lwjgl.Sys;
 
 public class Main implements jog.input.InputEventHandler, jog.network.NetworkEventHandler {
@@ -18,8 +21,10 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	private jog.image.Image img;
 	private jog.graphics.Quad corner;
 	private jog.font.Font font;
-	
+	private jog.graphics.Shader[] shaders;
+	private double timer;
 	private double rotation;
+	private int shaderToDraw;
 	
 	private String multiplayerRole = "";
 	private jog.network.Server server = null;
@@ -27,6 +32,7 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	
 	public Main() {
 		start();
+		getDeltaTime();
 		while(!jog.window.isClosed()) {
 			dt = getDeltaTime();
 			update(dt);
@@ -36,7 +42,6 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	}
 	
 	private void start() {
-		lastFrameTime = (double)(Sys.getTime()) / Sys.getTimerResolution();
 		jog.window.initialise(TITLE, WIDTH, HEIGHT);
 		jog.graphics.initialise();
 		jog.filesystem.addLocation("src" + File.separator + "gfx");
@@ -52,6 +57,15 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 		jog.window.setIcon(icons);
 //		beep = audio.newSoundEffect("beep.ogg");
 		rotation = 0;
+		timer = 0;
+		shaderToDraw = 0;
+		jog.graphics.Shader[] s = {
+			jog.graphics.newShader("test1.vert", "test1.frag"),
+			jog.graphics.newShader("test1.vert", "test2.frag"),
+			jog.graphics.newShader("test1.vert", "test3.frag"),
+			jog.graphics.newShader("test1.vert", "test4.frag"),
+		};
+		shaders = s;
 	}
 	
 	/**
@@ -69,8 +83,9 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 		jog.audio.update();
 		jog.input.update(this);
 		jog.window.update();
-		
 		rotation += dt * Math.PI;
+		timer += dt;
+		for (jog.graphics.Shader s : shaders) s.setVariable("timeElapsed", (float)timer);
 	}
 	
 	private void draw() {
@@ -131,6 +146,9 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 		jog.graphics.setColour(255, 255, 255);
 		jog.graphics.print(multiplayerRole, 0, 12);
 		
+		jog.graphics.rectangle(true, 640, 480, 128, 64);
+		jog.graphics.rectangle(true, 700, 32, 8, 256);
+		
 		//--------------------------------\\
 		jog.graphics.setColour(255, 255, 255);
 		int x = jog.input.mouseX();
@@ -143,7 +161,13 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 		jog.graphics.line(x, y+r, x, jog.window.height());
 		jog.graphics.line(x+r, y, jog.window.width(), y);
 		jog.graphics.circle(false, x, y, r);
+		//--------------------------------\\		
 		
+		if (shaderToDraw > 0) {
+			jog.graphics.setShader(shaders[shaderToDraw-1]);
+			jog.graphics.rectangle(true, 0, 0, window.width(), window.height());
+		}
+		jog.graphics.setShader();
 		
 	}
 	
@@ -183,7 +207,7 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 			System.out.println("Creating Client...");
 			multiplayerRole = "Client";
 		}
-		if (key == jog.input.KEY_SPACE) {
+		if (key == jog.input.KEY_TAB) {
 			
 			if (jog.window.width() == 640) {
 				jog.window.setSize(960, 640);
@@ -191,6 +215,10 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 				jog.window.setSize(640, 480);
 			}
 			
+		}
+		if (key == jog.input.KEY_SPACE) {
+			shaderToDraw += 1;
+			shaderToDraw %= (shaders.length + 1);
 		}
 	}
 
