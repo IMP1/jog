@@ -264,8 +264,8 @@ public abstract class graphics {
 		 */
 		protected final int id;
 		
-		private Canvas(int id) {
-			this.id = id;
+		private Canvas(int width, int height) {
+			this.id = 0;
 		}
 		
 		/**
@@ -599,6 +599,43 @@ public abstract class graphics {
 	}
 	
 	/**
+	 * Creates and returns a new Canvas.
+	 * @param width the width of the canvas.
+	 * @param height the height of the canvas.
+	 * @return the created canvas.
+	 */
+	public static Canvas newCanvas(int width, int height) {
+		return new Canvas(width, height);
+	}
+	
+	/**
+	 * Accesses the current canvas being drawn to.
+	 * @return the current canvas.
+	 */
+	public static Canvas getCanvas() {
+		return currentCanvas;
+	}
+	
+	/**
+	 * Sets the canvas to be drawn to, until the canvas is changed again.
+	 * @param canvas the canvas to draw to from now on.
+	 */
+	public static void setCanvas(Canvas canvas) {
+		currentCanvas = canvas;
+		currentCanvas.set();
+	}
+	
+	/**
+	 * Removes the current canvas, reverting to drawing to the window.
+	 */
+	public static void setCanvas() {
+		if (currentCanvas != null) {
+			currentCanvas.unset();
+		}
+		currentCanvas = null;
+	}
+	
+	/**
 	 * Accesses the current shader affecting draw functions.
 	 * @return the current shader.
 	 */
@@ -608,15 +645,15 @@ public abstract class graphics {
 	
 	/**
 	 * Sets the shader to affect all things drawn until the shader is changed again.
-	 * @param shader
+	 * @param shader the shader to affect drawn things from now on.
 	 */
 	public static void setShader(Shader shader) {
-		shader.set();
 		currentShader = shader;
+		currentShader.set();
 	}
 	
 	/**
-	 * Removes the current shader affecting
+	 * Removes the current shader affecting drawing processes.
 	 */
 	public static void setShader() {
 		if (currentShader != null) {
