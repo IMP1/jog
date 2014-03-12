@@ -264,13 +264,8 @@ public abstract class graphics {
 		 */
 		protected final int id;
 		
-		public final int width;
-		public final int height;
-		
-		private Canvas(int id, int width, int height) {
+		private Canvas(int id) {
 			this.id = id;
-			this.width = width;
-			this.height = height;
 		}
 		
 		/**
