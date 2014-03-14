@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.lwjgl.opengl.GLContext;
+
 import static org.lwjgl.opengl.ARBFragmentShader.*;
 import static org.lwjgl.opengl.ARBShaderObjects.*;
 import static org.lwjgl.opengl.ARBVertexShader.*;
@@ -130,6 +132,16 @@ public abstract class graphics {
 	 * @author IMP1
 	 */
 	public static class Shader {
+
+		/**
+		 * Returns whether shaders are supported by the users hardware and OS. 
+		 * @return whether shaders are supported.
+		 */
+		public static boolean isSupported() {
+			return GLContext.getCapabilities().GL_ARB_shader_objects && 
+				   GLContext.getCapabilities().GL_ARB_vertex_shader && 
+				   GLContext.getCapabilities().GL_ARB_fragment_shader;
+		}
 		
 		/**
 		 * The GL shader programme's ID.
@@ -257,7 +269,20 @@ public abstract class graphics {
 		
 	}
 	
+	/**
+	 * <h1>Canvas</h1>
+	 * <p>Represents an off-screen renders, or 'FrameBuffer'.</p>
+	 * @author IMP1
+	 */
 	public static class Canvas {
+		
+		/**
+		 * Returns whether canvases are supported by the users hardware and OS. 
+		 * @return whether canvases are supported.
+		 */
+		public static boolean isSupported() {
+			return GLContext.getCapabilities().GL_EXT_framebuffer_object;
+		}
 		
 		/**
 		 * The GL shader programme's ID.
@@ -320,10 +345,31 @@ public abstract class graphics {
 		if (backgroundColour == null) setBackgroundColour(0, 0, 0);
 		if (currentColour == null) setColour(255, 255, 255);
 		initialised = true;
+		checkUnsupportedFeatures();
 	}
 	
+	/**
+	 * Returns whether jog.graphics has been initialised.
+	 * @return whether jog.graphics has been initialised. 
+	 */
 	public static boolean isInitialised() {
 		return initialised;
+	}
+	
+	/**
+	 * Checks shaders, canvases, non-PO2 textures to check whether they're supported, 
+	 * and if not, prints a warning.
+	 */
+	private static void checkUnsupportedFeatures() {
+		if (!GLContext.getCapabilities().GL_ARB_texture_non_power_of_two) {
+			System.err.println("[jog.graphics] Warning: Non-PO2 textures not supported.");
+		}
+		if (!Shader.isSupported()) {
+			System.err.println("[jog.graphics] Warning: Shaders not supported.");
+		}
+		if (!Canvas.isSupported()) {
+			System.err.println("[jog.graphics] Warning: Canvas not supported.");
+		}
 	}
 
 	/**
