@@ -76,7 +76,7 @@ public abstract class image {
 				PNGDecoder decoder = new PNGDecoder(in);
 				width = decoder.getWidth();
 				height = decoder.getHeight();
-				System.out.println("Loaded image: \"" + filepath + "\" with the dimensions: (" + width + ", " + height + ").");
+				System.out.println("[jog.image] Loaded image: \"" + filepath + "\" with the dimensions: (" + width + ", " + height + ").");
 				bytes = ByteBuffer.allocateDirect(4 * width * height);
 				decoder.decode(bytes, width * 4, Format.RGBA);
 				bytes.flip();
