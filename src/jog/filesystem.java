@@ -17,6 +17,10 @@ public abstract class filesystem {
 	 */
 	private static ArrayList<String> locations = new ArrayList<String>();
 	
+	static {
+		addLocation(".", false);
+	}
+	
 	/**
 	 * Adds a location to be tracked.
 	 * @param filepath the path to the directory to be added.
@@ -34,13 +38,12 @@ public abstract class filesystem {
 		String path = newLocation.getAbsolutePath();
 		// Warn if pre-existing.
 		if (locations.contains(path)) {
-			System.err.println("Location \"" + filepath + "\" is already included.");
+			System.err.println("[jog.filesystem] \"" + filepath + "\" is already a project location.");
 			return;
 		}
 		// Add location
 		locations.add(path);
-		// TODO remove debugging 'println's
-		for (int i = 0; i < depth; i ++) System.out.print("\t");
+		System.out.println("[jog.filesystem] \"" + path + "\" added to project locations.");
 		// ~~~~~~
 		// If we don't want to look any further
 		if (!subFolders) {			
@@ -82,9 +85,10 @@ public abstract class filesystem {
 			path = loc + File.separator + filename;
 			f = (new File(path)).getAbsoluteFile();
 			if (f.exists()) {
-				return path;
+				return f.getAbsolutePath();
 			}
 		}
+		System.out.println();
 		throw new RuntimeException("No path to file: " + filename);
 	}
 
