@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
@@ -21,24 +22,29 @@ public abstract class window {
 	/**
 	 * Target Frames per Second
 	 */
-	final private static int FPS = 60;
+	private static int targetFPS;
 	
 	private static int width;
 	private static int height;
 	private static boolean closed;
+	private static double lastFrameTime;
 	
 	/**
 	 * Creates a new window.
 	 * @param title the title of the window.
 	 * @param width the width of the window.
 	 * @param height the height of the window.
+	 * @param targetFPS the frames per second to sync to if too fast.
 	 */
-	public static void initialise(String title, int width, int height) {
+	public static void initialise(String title, int width, int height, int targetFPS) {
 		try {
 			setSize(width, height);
 			setTitle(title);
 			Display.create();
 			closed = false;
+			window.targetFPS = targetFPS;
+			lastFrameTime = 0;
+			getDeltaTime();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 			closed = true;
@@ -146,7 +152,14 @@ public abstract class window {
 		closed = closed || Display.isCloseRequested();
 		if (closed) return;
 		Display.update();
-		Display.sync(FPS);
+		Display.sync(targetFPS);
+	}
+	
+	public static double getDeltaTime() {
+		double time = (double)(Sys.getTime()) / Sys.getTimerResolution();
+		double delta = (time - lastFrameTime);
+	    lastFrameTime = time;
+	    return delta;
 	}
 	
 	/**
