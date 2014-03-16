@@ -1,11 +1,6 @@
-import java.io.File;
+package test;
 
-import jog.input;
-import jog.window;
-
-import org.lwjgl.Sys;
-
-public class Main implements jog.input.InputEventHandler, jog.network.NetworkEventHandler {
+public class Main implements jog.input.InputEventHandler, jog.network.ClientEventHandler, jog.network.ServerEventHandler {
 	
 	public static void main(String[] args) {
 		new Main();
@@ -14,8 +9,8 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	final private String TITLE = "JOG";
 	final private int WIDTH = 640;
 	final private int HEIGHT = 480;
+	final private int FPS = 60;
 	
-	private double lastFrameTime;
 	private double dt;
 	
 	private jog.image.Image img;
@@ -32,9 +27,8 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	
 	public Main() {
 		start();
-		getDeltaTime();
 		while(!jog.window.isClosed()) {
-			dt = getDeltaTime();
+			dt = jog.window.getDeltaTime();
 			update(dt);
 			draw();
 		}
@@ -42,13 +36,11 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	}
 	
 	private void start() {
-		jog.window.initialise(TITLE, WIDTH, HEIGHT);
+		jog.window.initialise(TITLE, WIDTH, HEIGHT, FPS);
 		jog.graphics.initialise();
-		jog.filesystem.addLocation("src" + File.separator + "gfx");
-		jog.filesystem.addLocation("src" + File.separator + "sfx");
-		img = jog.image.newImage("ship.png");
-		System.out.println(img.pixelAt(35, 40));
-		System.out.println(img.pixelAt(35, 41));
+		img = jog.image.newImage("src/test/gfx/ship.png");
+		jog.filesystem.addLocation("src/test/gfx");
+		jog.filesystem.addLocation("src/test/sfx");
 		corner = jog.graphics.newQuad(0, 0, 32, 32, img.width, img.height);
 		font = jog.font.newBitmapFont("font.png", "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz1234567890.,_-!?()[]><#~:;/\\^'\"{}£$@@@@@@@@");
 		jog.graphics.setFont(font);
@@ -66,17 +58,6 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 			jog.graphics.newShader("test1.vert", "test4.frag"),
 		};
 		shaders = s;
-	}
-	
-	/**
-	 * Calculates the time taken since the last tick in seconds as a double-precision floating point number.
-	 * @return the time in seconds since the last frame.
-	 */
-	private double getDeltaTime() {
-		double time = (double)(Sys.getTime()) / Sys.getTimerResolution();
-	    double delta = (time - lastFrameTime);
-	    lastFrameTime = time;
-	    return delta;
 	}
 	
 	private void update(double dt) {
@@ -145,6 +126,13 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 		
 		jog.graphics.setColour(255, 255, 255);
 		jog.graphics.print(multiplayerRole, 0, 12);
+		if (multiplayerRole == "Server") {
+			jog.graphics.print(server.getAddress() + ":" + server.getPort(), 0, 24);
+			String[] lines = server.getClients();
+			for (int i = 0; i < lines.length; i ++) {
+				jog.graphics.print(lines[i], 8, 36 + i * 12);
+			}
+		}
 		
 		jog.graphics.rectangle(true, 640, 480, 128, 64);
 		jog.graphics.rectangle(true, 700, 32, 8, 256);
@@ -165,7 +153,7 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 		
 		if (shaderToDraw > 0) {
 			jog.graphics.setShader(shaders[shaderToDraw-1]);
-			jog.graphics.rectangle(true, 0, 0, window.width(), window.height());
+			jog.graphics.rectangle(true, 0, 0, jog.window.width(), jog.window.height());
 		}
 		jog.graphics.setShader();
 		
@@ -183,8 +171,14 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	}
 	
 	private void quit() {
-		jog.window.dispose();
+		if (multiplayerRole == "Client") {
+			client.send("Goodbye! o/");
+		}
 		jog.audio.dispose();
+		jog.graphics.dispose();
+		jog.input.dispose();
+		jog.network.dispose();
+		jog.window.dispose();
 	}
 
 	@Override
@@ -199,13 +193,22 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 
 	@Override
 	public void keyPressed(int key) {
-		if (key == jog.input.KEY_1) {
-			System.out.println("Creating Server...");
+		if (key == jog.input.KEY_1 && multiplayerRole == "") {
 			multiplayerRole = "Server";
+			server = jog.network.newServer(1337, this);
 		}
-		if (key == jog.input.KEY_2) {
-			System.out.println("Creating Client...");
+		if (key == jog.input.KEY_2 && multiplayerRole == "") {
 			multiplayerRole = "Client";
+			client = jog.network.newClient("localhost", 1337, this);
+		}
+		if (key == jog.input.KEY_M) {
+			if (multiplayerRole == "Server") {
+				System.out.println("Sending");
+				server.send("127.0.0.1", "Hello?");
+			} else if (multiplayerRole == "Client") {
+				System.out.println("Sending");
+				client.send("Hello?");
+			}
 		}
 		if (key == jog.input.KEY_TAB) {
 			
@@ -225,6 +228,21 @@ public class Main implements jog.input.InputEventHandler, jog.network.NetworkEve
 	@Override
 	public void keyReleased(int key) {
 		
+	}
+
+	@Override
+	public void onMessage(String message) {
+		System.out.println("Recieved \"" + message + "\" from server.");
+	}
+
+	@Override
+	public void onMessage(String sender, String message) {
+		System.out.println("Recieved \"" + message + "\" from client \"" + sender + "\".");
+	}
+
+	@Override
+	public void onConnect(String address) {
+		System.out.println("Connected to " + address);
 	}
 
 }
