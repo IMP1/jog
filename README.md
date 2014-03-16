@@ -2,7 +2,7 @@
 
 Built on top of the [LWJGL](http://lwjgl.org/), and heavily based upon [LÖVE](https://love2d.org/), JÖG is a game library that provides only what is necessary, and not too much more. It begun life using a few methods from [Slick](http://slick.ninjacave.com/), mainly those for audio, but I decided that needing slick just for audio meant that the user had access to all of slick, and so probably wouldn't need JÖG.
 
-There is a list of things I'm planning to add in the [TODO](https://github.com/IMP1/jog/blob/master/LICENSE.md).
+There is a list of things I'm planning to add in the [TODO](https://github.com/IMP1/jog/blob/master/TODO.md).
 
 It is broken down into 8 modules: audio, filesystem, font, graphics, image, input, network, and window.
 
@@ -21,3 +21,5 @@ The **input** module allows the status of keyboard and mouse buttons (whether th
 The **network** module is being worked on currently and is very rough. I've just gotten multiple clients connecting and sending/recieving data, but it's very buggy and error-prone.
 
 The **window** module allows creation of the window, and setting of certain settings, such as the title, icon and dimensions.
+
+When I'm happy with the basic set of features (i.e when I feel 1.0.0 is done), I'll start working on a wiki.
