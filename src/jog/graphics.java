@@ -332,6 +332,14 @@ public abstract class graphics {
 	private static boolean initialised = false;
 	
 	/**
+	 * Returns whether jog.graphics has been initialised.
+	 * @return whether jog.graphics has been initialised. 
+	 */
+	public static boolean isInitialised() {
+		return initialised;
+	}
+	
+	/**
 	 * Intialises OpenGL with the appropriate matrix modes and orthographic dimensions. 
 	 */
 	public static void initialise() {
@@ -349,13 +357,12 @@ public abstract class graphics {
 	}
 	
 	/**
-	 * Returns whether jog.graphics has been initialised.
-	 * @return whether jog.graphics has been initialised. 
+	 * Disposes of the resources used by jog.graphics.
 	 */
-	public static boolean isInitialised() {
-		return initialised;
+	public static void dispose() {
+		
 	}
-	
+
 	/**
 	 * Checks shaders, canvases, non-PO2 textures to check whether they're supported, 
 	 * and if not, prints a warning.
