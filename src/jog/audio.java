@@ -27,7 +27,7 @@ public abstract class audio {
 		
 	}
 	
-	public static void init() {
+	public static void initialse() {
 		
 	}
 	
