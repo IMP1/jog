@@ -600,9 +600,11 @@ public abstract class graphics {
 	 * @param size the size to draw the text at.
 	 * @param width the width the text is centred around.
 	 */
-	public static void printCentred(String text, double x, double y, double size, double width) {
+	public static void printCentred(String text, double x, double y, double width, double size) {
 		currentFont.printCentred(x, y, width, text, size);
 	}
+	
+	public static void printCentred(String text, double x, double y, double width) { printCentred(text, x, y, width, 1); }
 
 	/**
 	 * Draws a rectangle.
