@@ -1,6 +1,9 @@
 package jog;
 
 import static org.lwjgl.opengl.GL11.*;
+
+import java.util.HashMap;
+
 import jog.image.Image;
 
 /**
@@ -38,6 +41,7 @@ public abstract class font {
 		 */
 		private String glyphs;
 		private Image image;
+		private HashMap<Character, Integer> charWidths;
 		
 		/**
 		 * Constructor for a bitmap font.
@@ -47,6 +51,25 @@ public abstract class font {
 		protected BitmapFont(String filepath, String chars) {
 			image = jog.image.newImage(filepath);
 			glyphs = chars;
+			charWidths = new HashMap<Character, Integer>();
+			for (char glyph : chars.toCharArray()) {
+				charWidths.put(glyph, image.height);
+			}
+		}
+		
+		/**
+		 * Constructor for a bitmap font.
+		 * @param filepath the path to the image file.
+		 * @param chars a String containing the characters in the same order that the image has them.
+		 * @param widths an array containing the widths of the characters in the same order that the image has them.
+		 */
+		protected BitmapFont(String filepath, String chars, int[] widths) {
+			image = jog.image.newImage(filepath);
+			glyphs = chars;
+			charWidths = new HashMap<Character, Integer>();
+			for (int i = 0; i < chars.length(); i ++) {
+				charWidths.put(chars.charAt(i), widths[i]);
+			}
 		}
 		
 		/**
@@ -60,8 +83,6 @@ public abstract class font {
 		protected void print(double x, double y, String text, double size) {
 			double w = image.height;
 			double h = image.height;
-			double qw = w / image.width;
-			double qh = 1;
 			
 	    	glEnable(GL_TEXTURE_2D);
 	    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -70,8 +91,12 @@ public abstract class font {
 			glTranslated(x, y, 0);
 			glScaled(size, size, 1);
 			glBegin(GL_QUADS);
+			
+			double qx, qw;
+			double qh = 1;
 			for (int i = 0; i < text.length(); i ++) {
-				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width;
+				qw = (charWidths.get(text.charAt(i))) / (double)image.width;
+				qx = glyphs.indexOf(text.charAt(i)) * qw;
 				glTexCoord2d(qx, 0);
 				glVertex2d(w * i, 0);
 				glTexCoord2d(qx + qw, 0);
@@ -98,9 +123,7 @@ public abstract class font {
 		protected void printCentred(double x, double y, double width, String text, double size) {
 			double w = image.height;
 			double h = image.height;
-			double qw = w / image.width;
-			double qh = 1;
-			x += (width - (w * text.length() * size)) / 2;
+			x += (width - getWidth(text) * size) / 2;
 			
 			glEnable(GL_TEXTURE_2D);
 	    	image.bind();
@@ -108,8 +131,12 @@ public abstract class font {
 			glTranslated(x, y, 0);
 			glScaled(size, size, 1);
 			glBegin(GL_QUADS);
+			
+			double qw, qx;
+			double qh = 1;
 			for (int i = 0; i < text.length(); i ++) {
-				double qx = glyphs.indexOf(text.charAt(i)) * w / image.width;
+				qw = (charWidths.get(text.charAt(i))) / (double)image.width;
+				qx = glyphs.indexOf(text.charAt(i)) * w / image.width;
 				glTexCoord2d(qx, 0);
 				glVertex2d(w * i, 0);
 				glTexCoord2d(qx + qw, 0);
@@ -126,8 +153,11 @@ public abstract class font {
 
 		@Override
 		public int getWidth(String text) {
-			// TODO Auto-generated method stub
-			return 0;
+			int width = 0;
+			for (char letter : text.toCharArray()) {
+				width += charWidths.get(letter);
+			}
+			return width;
 		}
 
 	}
@@ -140,6 +170,10 @@ public abstract class font {
 	 */
 	public static BitmapFont newBitmapFont(String filepath, String glyphs) {
 		return new BitmapFont(filepath, glyphs);
+	}
+	
+	public static BitmapFont newBitmapFont(String filepath, String glpyhs, int[] widths) {
+		return new BitmapFont(filepath, glpyhs, widths);
 	}
 	
 }
