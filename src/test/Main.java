@@ -36,7 +36,8 @@ public class Main implements jog.input.InputEventHandler, jog.network.ClientEven
 	}
 	
 	private void start() {
-		jog.window.initialise(TITLE, WIDTH, HEIGHT, FPS);
+		jog.window.initialise(TITLE, WIDTH, HEIGHT, FPS, jog.window.WindowMode.BORDERLESS_FULLSCREEN);
+//		jog.window.setFullscreen(true);
 		jog.graphics.initialise();
 		img = jog.image.newImage("src/test/gfx/ship.png");
 		jog.filesystem.addLocation("src/test/gfx");
@@ -141,7 +142,7 @@ public class Main implements jog.input.InputEventHandler, jog.network.ClientEven
 		jog.graphics.setColour(255, 255, 255);
 		int x = jog.input.mouseX();
 		int y = jog.input.mouseY();
-		jog.graphics.print("(" + x + ", " + y + ")", 0, 0);
+		jog.graphics.printCentred("(" + x + ", " + y + ")", 0, 0, jog.window.width());
 		jog.graphics.setColour(0, 64, 128, 128);
 		int r = 10;
 		jog.graphics.line(x, 0, x, y-r);
