@@ -19,6 +19,13 @@ import org.lwjgl.opengl.DisplayMode;
  */
 public abstract class window {
 	
+	public enum WindowMode {
+		WINDOWED,
+		FULLSCREEN,
+		BORDERLESS_WINDOWED,
+		BORDERLESS_FULLSCREEN,
+	}
+	
 	/**
 	 * Target Frames per Second
 	 */
@@ -36,10 +43,11 @@ public abstract class window {
 	 * @param height the height of the window.
 	 * @param targetFPS the frames per second to sync to if too fast.
 	 */
-	public static void initialise(String title, int width, int height, int targetFPS) {
+	public static void initialise(String title, int width, int height, int targetFPS, WindowMode mode) {
 		try {
 			setSize(width, height);
 			setTitle(title);
+			setMode(mode);
 			Display.create();
 			closed = false;
 			window.targetFPS = targetFPS;
@@ -94,6 +102,32 @@ public abstract class window {
 	 */
 	public static boolean isClosed() {
 		return closed;
+	}
+	
+	public static void setMode(WindowMode mode) {
+		if (mode == WindowMode.BORDERLESS_FULLSCREEN) {
+			System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
+			setSize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
+		} else if (mode == WindowMode.BORDERLESS_WINDOWED) {
+			System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
+		} else if (mode == WindowMode.FULLSCREEN) {
+			setSize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
+			try {
+				Display.setDisplayMode(Display.getDesktopDisplayMode());
+				Display.setFullscreen(true);
+			} catch (LWJGLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
+	/**
+	 * Allows for the setting of the window's position on the user's monitor.
+	 * @param x the x coordinate of the window.
+	 * @param y the y coordinate of the window.
+	 */
+	public static void setPosition(int x, int y) {
+		Display.setLocation(x, y);
 	}
 	
 	/**
