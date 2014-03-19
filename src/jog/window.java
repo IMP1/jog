@@ -26,15 +26,12 @@ public abstract class window {
 		BORDERLESS_FULLSCREEN,
 	}
 	
-	/**
-	 * Target Frames per Second
-	 */
 	private static int targetFPS;
-	
 	private static int width;
 	private static int height;
 	private static boolean closed;
 	private static double lastFrameTime;
+	private static WindowMode currentWindowMode;
 	
 	/**
 	 * Creates a new window.
@@ -104,7 +101,20 @@ public abstract class window {
 		return closed;
 	}
 	
+	/**
+	 * Allows access to the mode the window is in.
+	 * @return the window mode.
+	 */
+	public static WindowMode getMode() {
+		return currentWindowMode;
+	}
+	
+	/**
+	 * This handles the window's mode, setting the window to be borderless if need be, and to be fullscreen if need be.
+	 * @param mode the window mode to use.
+	 */
 	public static void setMode(WindowMode mode) {
+		currentWindowMode = mode;
 		if (mode == WindowMode.BORDERLESS_FULLSCREEN) {
 			System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 			setSize(Display.getDesktopDisplayMode().getWidth(), Display.getDesktopDisplayMode().getHeight());
