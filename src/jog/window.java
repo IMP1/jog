@@ -110,6 +110,22 @@ public abstract class window {
 	}
 	
 	/**
+	 * Allows access to the window's position.
+	 * @return the x coordinate of the window.
+	 */
+	public static int getX() {
+		return Display.getX();
+	}
+	
+	/**
+	 * Allows access to the window's position.
+	 * @return the y coordinate of the window.
+	 */
+	public static int getY() {
+		return Display.getY();
+	}
+	
+	/**
 	 * This handles the window's mode, setting the window to be borderless if need be, and to be fullscreen if need be.
 	 * @param mode the window mode to use.
 	 */
