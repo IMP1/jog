@@ -46,7 +46,7 @@ public abstract class filesystem {
 		System.out.println("[jog.filesystem] \"" + path + "\" added to project locations.");
 		// ~~~~~~
 		// If we don't want to look any further
-		if (!subFolders) {			
+		if (!subFolders || !newLocation.isDirectory()) {			
 			return;
 		}
 		// If we _do_ want to look further, create array of files
