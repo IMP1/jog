@@ -1,5 +1,7 @@
 package test;
 
+import jog.audio;
+
 public class Main implements jog.input.InputEventHandler, jog.network.ClientEventHandler, jog.network.ServerEventHandler {
 	
 	public static void main(String[] args) {
@@ -48,7 +50,8 @@ public class Main implements jog.input.InputEventHandler, jog.network.ClientEven
 		jog.graphics.setBackgroundColour(0, 128, 128);
 		String[] icons = {"icon16.png", "icon32.png", "icon64.png"}; 
 		jog.window.setIcon(icons);
-//		beep = audio.newSoundEffect("beep.ogg");
+		audio.Source beep = audio.newSource("beep.ogg");
+		beep.play();
 		rotation = 0;
 		timer = 0;
 		shaderToDraw = 0;
