@@ -6,7 +6,7 @@ There is a list of things I'm planning to add in the [TODO](https://github.com/I
 
 It is broken down into 8 modules: audio, filesystem, font, graphics, image, input, network, and window.
 
-The **audio** module deals with music and sound effects. It uses OpenAL and currently accepts .ogg filetypes.
+The **audio** module deals with music and sound effects. It uses [Kevin Glass's EasyOgg library](http://www.cokeandcode.com/) and currently accepts .ogg filetypes.
 
 The **filesystem** module handles searching multiple locations for files, and can convert paths to URLs.
 
