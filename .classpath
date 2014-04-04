@@ -10,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="ext/PNGDecoder.jar"/>
+	<classpathentry kind="lib" path="ext/easyogg.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
