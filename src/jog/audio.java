@@ -1,9 +1,9 @@
 package jog;
 
-import java.nio.FloatBuffer;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL;
+import org.newdawn.easyogg.OggClip;
 
 /**
  * <h1>jog.audio</h1>
@@ -12,18 +12,34 @@ import org.lwjgl.openal.AL;
  */
 public abstract class audio {
 	
-	protected static FloatBuffer listenerPosition = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-	protected static FloatBuffer listenerVelocity = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-	protected static FloatBuffer listenerOrientation = BufferUtils.createFloatBuffer(6).put(new float[] { 0.0f, 0.0f, -1.0f,  0.0f, 1.0f, 0.0f });
-	
-	public static abstract class Source {
+	public static class Source {
 		
-		protected FloatBuffer position;
-		protected FloatBuffer velocity;
+		OggClip clip;
 		
-		public abstract void play();
-		public abstract void stop();
-		public abstract void pause();
+		private Source(String filename) {
+			try {
+				FileInputStream in = new FileInputStream(filename);
+				clip = new OggClip(in);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		public void play() {
+			clip.play();
+		}
+		
+		public void pause() {
+			clip.pause();
+		}
+		
+		public void stop() {
+			clip.stop();
+		}
+		
+		public void resume() {
+			clip.resume();
+		}
 		
 	}
 	
@@ -37,6 +53,10 @@ public abstract class audio {
 	
 	public static void dispose() {
 		
+	}
+	
+	public static Source newSource(String filename) {
+		return new Source(filesystem.getPath(filename));
 	}
 	
 }
