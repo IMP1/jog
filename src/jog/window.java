@@ -39,6 +39,7 @@ public abstract class window {
 	 * @param width the width of the window.
 	 * @param height the height of the window.
 	 * @param targetFPS the frames per second to sync to if too fast.
+	 * @param mode the {@link WindowMode} to use.
 	 */
 	public static void initialise(String title, int width, int height, int targetFPS, WindowMode mode) {
 		try {
@@ -54,6 +55,17 @@ public abstract class window {
 			e.printStackTrace();
 			closed = true;
 		}
+	}
+
+	/**
+	 * Creates a new window with the windowed {@link WindowMode}
+	 * @param title the title of the window.
+	 * @param width the width of the window.
+	 * @param height the height of the window.
+	 * @param targetFPS the frames per second to sync to if too fast.
+	 */
+	public static void initialise(String title, int width, int height, int targetFPS) {
+		window.initialise(title, width, height, targetFPS, WindowMode.WINDOWED);
 	}
 	
 	/** 
