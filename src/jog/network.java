@@ -127,6 +127,7 @@ public abstract class network {
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
+						
 					}
 				}
 			}
@@ -144,6 +145,7 @@ public abstract class network {
 			super();
 			try {
 				socket = new ServerSocket(port);
+				socket.setReuseAddress(true);
 				clientReaders = new ArrayList<ClientListener>();
 				clientWriters = new HashMap<String, BufferedWriter>();
 				this.handler = handler;
