@@ -38,7 +38,7 @@ public class Main implements jog.input.InputEventHandler, jog.network.ClientEven
 	}
 	
 	private void start() {
-		jog.window.initialise(TITLE, WIDTH, HEIGHT, FPS, jog.window.WindowMode.BORDERLESS_FULLSCREEN);
+		jog.window.initialise(TITLE, WIDTH, HEIGHT, FPS, jog.window.WindowMode.WINDOWED);
 //		jog.window.setFullscreen(true);
 		jog.graphics.initialise();
 		img = jog.image.newImage("src/test/gfx/ship.png");
@@ -214,6 +214,13 @@ public class Main implements jog.input.InputEventHandler, jog.network.ClientEven
 				client.send("Hello?");
 			}
 		}
+		if (key == jog.input.KEY_S) {
+			if (multiplayerRole == "Server") {
+				server.send("127.0.0.1", "change shader");
+			} else if (multiplayerRole == "Client") {
+				client.send("change shader");
+			}
+		}
 		if (key == jog.input.KEY_TAB) {
 			
 			if (jog.window.width() == 640) {
@@ -237,11 +244,19 @@ public class Main implements jog.input.InputEventHandler, jog.network.ClientEven
 	@Override
 	public void onMessage(String message) {
 		System.out.println("Recieved \"" + message + "\" from server.");
+		if (message.equals("change shader")) {
+			shaderToDraw += 1;
+			shaderToDraw %= (shaders.length + 1);
+		}
 	}
 
 	@Override
 	public void onMessage(String sender, String message) {
 		System.out.println("Recieved \"" + message + "\" from client \"" + sender + "\".");
+		if (message.equals("change shader")) {
+			shaderToDraw += 1;
+			shaderToDraw %= (shaders.length + 1);
+		}
 	}
 
 	@Override
