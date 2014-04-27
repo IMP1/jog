@@ -247,8 +247,10 @@ public abstract class graphics {
 		}
 		
 		public void setVariable(String variableName, int value) {
+			set();
 			int variableLocation = glGetUniformLocationARB(programmeID, variableName);
 			glUniform1iARB(variableLocation, value);
+			unset();
 		}
 		
 		public void setVariable(String variableName, float value) {
