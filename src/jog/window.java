@@ -41,15 +41,16 @@ public abstract class window {
 	 * @param targetFPS the frames per second to sync to if too fast.
 	 * @param mode the {@link WindowMode} to use.
 	 */
-	public static void initialise(String title, int width, int height, int targetFPS, WindowMode mode) {
+	public static void initialise(String title, int width, int height, int targetFPS, WindowMode mode, boolean resizable) {
 		try {
+			window.closed = false;
+			window.targetFPS = targetFPS;
+			window.lastFrameTime = 0;
 			setSize(width, height);
 			setTitle(title);
 			setMode(mode);
+			setResizable(resizable);
 			Display.create();
-			closed = false;
-			window.targetFPS = targetFPS;
-			lastFrameTime = 0;
 			getDeltaTime();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -65,28 +66,7 @@ public abstract class window {
 	 * @param targetFPS the frames per second to sync to if too fast.
 	 */
 	public static void initialise(String title, int width, int height, int targetFPS) {
-		window.initialise(title, width, height, targetFPS, WindowMode.WINDOWED);
-	}
-	
-	/** 
-	 * Allows for changing the size of the window.
-	 * <p>It does this by creating a new DisplayMode with a specified
-	 * width and height, and sets the Display's DisplayMode to 
-	 * that new DisplayMode.</p>
-	 * @param newWidth the new width for the window.
-	 * @param newHeight the new height for the window.
-	 */
-	public static void setSize(int newWidth, int newHeight) {
-		try {
-			Display.setDisplayMode(new DisplayMode(newWidth, newHeight));
-			width = newWidth;
-			height = newHeight;
-			if (graphics.isInitialised()) {
-				graphics.initialise();
-			}
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		}
+		window.initialise(title, width, height, targetFPS, WindowMode.WINDOWED, false);
 	}
 	
 	/**
@@ -136,6 +116,23 @@ public abstract class window {
 	public static int getY() {
 		return Display.getY();
 	}
+
+	/** 
+	 * Allows for changing the size of the window.
+	 * <p>It does this by creating a new DisplayMode with a specified
+	 * width and height, and sets the Display's DisplayMode to 
+	 * that new DisplayMode.</p>
+	 * @param newWidth the new width for the window.
+	 * @param newHeight the new height for the window.
+	 */
+	public static void setSize(int newWidth, int newHeight) {
+		try {
+			Display.setDisplayMode(new DisplayMode(newWidth, newHeight));
+			refreshWindowSize();
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * This handles the window's mode, setting the window to be borderless if need be, and to be fullscreen if need be.
@@ -166,6 +163,14 @@ public abstract class window {
 	 */
 	public static void setPosition(int x, int y) {
 		Display.setLocation(x, y);
+	}
+	
+	/**
+	 * Allows for letting the user resize the window.
+	 * @param resizable whether the window can be resized.
+	 */
+	public static void setResizable(boolean resizable) {
+		Display.setResizable(resizable);
 	}
 	
 	/**
@@ -200,6 +205,13 @@ public abstract class window {
 		}
 	}
 	
+	/**
+	 * Loads an image into a byte buffer pixel by pixel.
+	 * @param filename the name of the icon image file.
+	 * @param size the width (and height) of the image in pixels.
+	 * @return a byte buffer containing the image data.
+	 * @throws IOException
+	 */
 	private static ByteBuffer loadIcon(String filename, int size) throws IOException {
 		URL url = filesystem.getURL(filename);
 		BufferedImage img = ImageIO.read(url);
@@ -216,6 +228,14 @@ public abstract class window {
 		return ByteBuffer.wrap(imageBytes);
 	}
 	
+	private static void refreshWindowSize() {
+		width = Display.getWidth();
+		height = Display.getHeight();
+		if (graphics.isInitialised()) {
+			graphics.initialise();
+		}
+	}
+	
 	/**
 	 * Updates the window and syncs it with the specified FPS. 
 	 * It also updates whether the window has been closed or not.
@@ -223,10 +243,17 @@ public abstract class window {
 	public static void update() {
 		closed = closed || Display.isCloseRequested();
 		if (closed) return;
+		if (Display.wasResized()) {
+			refreshWindowSize();
+		}
 		Display.update();
 		Display.sync(targetFPS);
 	}
 	
+	/**
+	 * Gets the change of time in seconds (delta time) since the last time this method was called.
+	 * @return that delta time.
+	 */
 	public static double getDeltaTime() {
 		double time = (double)(Sys.getTime()) / Sys.getTimerResolution();
 		double delta = (time - lastFrameTime);
