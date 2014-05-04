@@ -2,7 +2,7 @@
 
 ### [Wiki (W.I.P)](https://github.com/IMP1/jog/wiki) | [License](https://github.com/IMP1/jog/blob/master/LICENSE.md) | [Issues](https://github.com/IMP1/jog/issues?state=open) | [Download](https://github.com/IMP1/jog/blob/master/jog.jar)
 
-Built on top of the [LWJGL](http://lwjgl.org/), and heavily based upon [LÖVE](https://love2d.org/), JÖG is a game library that provides only what is necessary, and not too much more. It begun life using a few methods from [Slick](http://slick.ninjacave.com/), mainly those for audio, but I decided that needing slick just for audio meant that the user had access to all of slick, and so probably wouldn't need Jog.
+Built on top of the [LWJGL](http://lwjgl.org/), and heavily based upon [LÖVE](https://love2d.org/), Jog is a game library that provides only what is necessary, and not too much more. It begun life using a few methods from [Slick](http://slick.ninjacave.com/), mainly those for audio, but I decided that needing slick just for audio meant that the user had access to all of slick, and so probably wouldn't need Jog.
 
 It is broken down into the following 8 modules:
 
