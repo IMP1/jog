@@ -45,8 +45,9 @@ public abstract class image {
 	}
 	
 	/**
-	 * The different filter modes available.
-	 * @author IMP1
+	 * Loads and returns a new image, letting openGL know about its existence.
+	 * @param filename the path to the image (can be relative, as uses jog.filesystem).
+	 * @return
 	 */
 	public static Image newImage(String filename) {
 		return new Image(filesystem.getPath(filename));
@@ -59,16 +60,24 @@ public abstract class image {
 	 */
 	public static class Image {
 		
+		/** unique id for this image used by openGL */
 		public final int id;
+		/** width of image in pixels */
 		public final int width;
+		/** height of image in pixels */
 		public final int height;
+		/** image data */
 		public final ByteBuffer bytes;
 		
 		private FilterMode currentFilterModeMin;
 		private FilterMode currentFilterModeMag;
-		private WrapMode currentWrapModeMin;
-		private WrapMode currentWrapModeMag;
+		private WrapMode currentWrapModeX;
+		private WrapMode currentWrapModeY;
 		
+		/**
+		 * Loads in an image and lets openGL know about it.
+		 * @param filepath the path to the image.
+		 */
 		private Image(String filepath) {
 			InputStream in = null;
 			try {
@@ -91,10 +100,19 @@ public abstract class image {
 			}
 		}
 		
+		/**
+		 * Binds the image for openGL use. 
+		 */
 		protected void bind() {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
 		}
 		
+		/**
+		 * Allows access to the colours making up the image.
+		 * @param x the horizontal coordinate of the pixel.
+		 * @param y the vertical coordinate of the pixel.
+		 * @return the colour of the pixel.
+		 */
 		public graphics.Colour pixelAt(int x, int y) {
 			if (x < 0 || x > width) {
 				throw new IndexOutOfBoundsException("Invalid image pixel coordinates: x = " + x);
@@ -115,9 +133,22 @@ public abstract class image {
 			return new Colour(r, g, b, a);
 		}
 		
+		/**
+		 * Allows access to the {@link FilterMode} used when scaling down.
+		 * @return the FilterMode.
+		 */
 		public FilterMode getFilterModeMin() { return currentFilterModeMin; }
+		/**
+		 * Allows access to the {@link FilterMode} used when scaling up.
+		 * @return the FilterMode.
+		 */
 		public FilterMode getFilterModeMag() { return currentFilterModeMag; }
 		
+		/**
+		 * Sets the {@link FilterMode} to be used when scaling the image down and up, respectively.
+		 * @param filterModeMin
+		 * @param filterModeMag
+		 */
 		public void setFilterMode(FilterMode filterModeMin, FilterMode filterModeMag) {
 			glBindTexture(GL_TEXTURE_2D, id);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterModeMin.glFilterMode);
@@ -126,15 +157,28 @@ public abstract class image {
 			currentFilterModeMag = filterModeMag;
 		}
 		
-		public WrapMode getWrapModeMin() { return currentWrapModeMin; }
-		public WrapMode getWrapModeMag() { return currentWrapModeMag; }
+		/**
+		 * Allows access to the {@link WrapMode} used when overflowing horizontally.
+		 * @return the WrapMode.
+		 */
+		public WrapMode getWrapModeX() { return currentWrapModeX; }
+		/**
+		 * Allows access to the {@link WrapMode} used when overflowing vertically.
+		 * @return the WrapMode.
+		 */
+		public WrapMode getWrapModeY() { return currentWrapModeY; }
 		
+		/**
+		 * Sets the {@link WrapMode} to be used when the image overflows horizontally and vertically, respectively.
+		 * @param wrapModeX how to deal with overflow horizontally.
+		 * @param wrapModeY how to deal with overflow vertically.
+		 */
 		public void setWrapMode(WrapMode wrapModeX, WrapMode wrapModeY) {
 			glBindTexture(GL_TEXTURE_2D, id);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapModeX.glWrapMode);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapModeY.glWrapMode);
-			currentWrapModeMin = wrapModeX;
-			currentWrapModeMag = wrapModeY;
+			currentWrapModeX = wrapModeX;
+			currentWrapModeY = wrapModeY;
 		}
 		
 	}
