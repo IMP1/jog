@@ -228,6 +228,9 @@ public abstract class window {
 		return ByteBuffer.wrap(imageBytes);
 	}
 	
+	/**
+	 * Reinitialises the openGL viewport with a new width or height
+	 */
 	private static void refreshWindowSize() {
 		width = Display.getWidth();
 		height = Display.getHeight();
