@@ -697,6 +697,15 @@ public abstract class graphics {
 		currentCanvas = null;
 	}
 	
+	public static void setScissor(int x, int y, int width, int height) {
+		glScissor(x, window.height() - (y + height), width, height);
+		glEnable(GL_SCISSOR_TEST);
+	}
+	
+	public static void setScissor() {
+		glDisable(GL_SCISSOR_TEST);
+	}
+	
 	/**
 	 * Accesses the current shader affecting draw functions.
 	 * @return the current shader.
