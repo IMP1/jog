@@ -697,11 +697,21 @@ public abstract class graphics {
 		currentCanvas = null;
 	}
 	
+	/**
+	 * Sets the portion of the window that will be affected by draw functions.
+	 * @param x the horizontal coordinate of the rectangle in pixels.
+	 * @param y the vertical coordinate of the rectangle in pixels.
+	 * @param width the width of the rectangle in pixels.
+	 * @param height the height of the rectangle in pixels.
+	 */
 	public static void setScissor(int x, int y, int width, int height) {
 		glScissor(x, window.height() - (y + height), width, height);
 		glEnable(GL_SCISSOR_TEST);
 	}
 	
+	/**
+	 * Disables the scissor, reverting to drawing to the window.
+	 */
 	public static void setScissor() {
 		glDisable(GL_SCISSOR_TEST);
 	}
